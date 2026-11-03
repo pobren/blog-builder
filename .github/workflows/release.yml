@@ -6,6 +6,8 @@ name: Release
 on:
   push:
     tags: ["v*"]
+  # Or run it from the Actions tab: it tags the newest version itself.
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -29,11 +31,12 @@ jobs:
         id: v
         run: |
           version=$(jq -r '.version' release.json)
-          if [ "v${version}" != "${GITHUB_REF_NAME}" ]; then
+          if [ "${GITHUB_EVENT_NAME}" = "push" ] && [ "v${version}" != "${GITHUB_REF_NAME}" ]; then
             echo "The tag ${GITHUB_REF_NAME} doesn't match the version in release.json (${version})." >&2
             exit 1
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
           # This version's section of CHANGELOG.md, without its heading.
           awk -v v="## ${version}:" 'index($0, v) == 1 { on = 1; sub(/^## [^:]*: /, ""); print "## " $0; next } /^## / { on = 0 } on' CHANGELOG.md > "$RUNNER_TEMP/notes.md"
           echo "title=$(grep -m1 "^## ${version}:" CHANGELOG.md | sed 's/^## [^:]*: //')" >> "$GITHUB_OUTPUT"
@@ -48,4 +51,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" --title "Blog Builder ${{ steps.v.outputs.version }}: ${{ steps.v.outputs.title }}" --notes-file "$RUNNER_TEMP/notes.md"
+          gh release create "${{ steps.v.outputs.tag }}" --target "$GITHUB_SHA" --title "Blog Builder ${{ steps.v.outputs.version }}: ${{ steps.v.outputs.title }}" --notes-file "$RUNNER_TEMP/notes.md"
