@@ -48,7 +48,7 @@ The installer asks which domain and theme you'd like, makes the database, storag
 The button copies Blog Builder to your GitHub account, makes its database and storage in your Cloudflare account and builds it there (the first build takes several minutes). It asks for two things:
 
 - **THEME:** the theme to start with, such as `notebook`. You can switch later in the admin.
-- **SETUP_TOKEN:** a long secret code you make up.
+- **SETUP_TOKEN:** a long secret code you make up. Replace the example code: it won't work, so set-up stays locked until you choose your own.
 
 When it's deployed, open `https://<your blog's address>/setup-link?setup=<your code>` to make your admin account. Only someone with the code can finish the set-up. To use your own domain, open **Workers & Pages › blog-builder › Settings › Domains & Routes** and add it there.
 

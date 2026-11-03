@@ -85,11 +85,17 @@ async function publicPage(url: URL, method: string, response: Response, redirect
 	return response;
 }
 
+/** The placeholder in .dev.vars.example, which must never work as a real code. */
+const EXAMPLE_CODE = "pick-a-long-secret-code";
+
 export const onRequest = defineMiddleware(async (context, next) => {
 	if ((context.url.pathname === PLUGINS_API || context.url.pathname === `${PLUGINS_API}/`) && context.request.method === "GET") await namePlugins();
 
 	const { url, cookies, request } = context;
-	const token = (env as { SETUP_TOKEN?: string }).SETUP_TOKEN;
+	// No code, or the example one from .dev.vars.example (which anyone can read), locks set-up entirely:
+	// otherwise whoever found the blog first could make themselves its admin.
+	const raw = ((env as { SETUP_TOKEN?: string }).SETUP_TOKEN ?? "").trim();
+	const token = raw.length >= 8 && raw !== EXAMPLE_CODE ? raw : "";
 	const given = url.searchParams.get("setup");
 	if (token && given && same(given, token)) {
 		cookies.set(COOKIE, given, {
@@ -101,7 +107,19 @@ export const onRequest = defineMiddleware(async (context, next) => {
 		});
 	}
 
-	if (token && url.pathname.startsWith(SETUP_API) && request.method !== "GET") {
+	if (url.pathname.startsWith(SETUP_API) && request.method !== "GET") {
+		if (!token) {
+			return new Response(
+				JSON.stringify({
+					error: {
+						code: "SETUP_LOCKED",
+						message:
+							"Set-up is locked until the blog has a set-up code. In Cloudflare, open this Worker's Settings, then Variables and Secrets, and add a secret called SETUP_TOKEN with a long code you choose. Then open /setup-link?setup=<your code>.",
+					},
+				}),
+				{ status: 403, headers: { "Content-Type": "application/json" } },
+			);
+		}
 		const held = cookies.get(COOKIE)?.value ?? given ?? "";
 		if (!same(held, token)) {
 			return new Response(
