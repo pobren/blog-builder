@@ -10,7 +10,8 @@
 		"cli.mjs",
 		"releases",
 		"README.md",
-		"LICENSE"
+		"LICENSE",
+		"NOTICE"
 	],
 	"engines": {
 		"node": ">=20"

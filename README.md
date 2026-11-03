@@ -104,6 +104,6 @@ Help is only given on GitHub. Blog Builder is a free project, so answers come wh
 
 ## Licence and credits
 
-Blog Builder is licensed under the [MIT License](LICENSE). It's built on [EmDash](https://github.com/emdash-cms/emdash) by Cloudflare, also under the MIT License; thank you to its authors.
+Blog Builder is licensed under the [MIT License](LICENSE). It's built on [EmDash](https://github.com/emdash-cms/emdash) by Cloudflare, also under the MIT License; thank you to its authors. See [NOTICE](NOTICE).
 
 Blog Builder is independent. It isn't made, endorsed or supported by Cloudflare.

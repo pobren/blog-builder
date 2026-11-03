@@ -123,6 +123,7 @@ const pkg = JSON.parse(readFileSync(join(root, "installer/package.json"), "utf8"
 writeFileSync(join(npmDir, "package.json"), `${JSON.stringify({ ...pkg, version: release.version }, null, "\t")}\n`);
 cpSync(join(root, "installer/README.md"), join(npmDir, "README.md"));
 cpSync(join(root, "LICENSE"), join(npmDir, "LICENSE"));
+cpSync(join(root, "NOTICE"), join(npmDir, "NOTICE"));
 
 const size = statSync(join(out, "worker.json")).size;
 console.log(`@mrpwob/blog-builder ${release.version}: ${modules.length} Worker modules (${(size / 1048576).toFixed(1)} MB), ${assets.length} assets, in npm/`);
