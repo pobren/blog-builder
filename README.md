@@ -27,7 +27,7 @@ Blog Builder is [EmDash](https://github.com/emdash-cms/emdash), the open-source 
 
 ## Install
 
-Both ways install into your own Cloudflare account, and updating later keeps your posts and settings.
+There are three ways. All of them install into your own Cloudflare account, and updating later keeps your posts and settings.
 
 ### 1. The installer (recommended)
 
@@ -41,7 +41,20 @@ npx @mrpwob/blog-builder setup
 
 The installer asks which domain and theme you'd like, makes the database, storage and web address, then gives you a one-time link to make your admin account. Only that link can finish the set-up, so nobody else can claim your blog first.
 
-### 2. From the code
+### 2. Deploy to Cloudflare
+
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/pobren/blog-builder)
+
+The button copies Blog Builder to your GitHub account, makes its database and storage in your Cloudflare account and builds it there (the first build takes several minutes). It asks for two things:
+
+- **THEME:** the theme to start with, such as `notebook`. You can switch later in the admin.
+- **SETUP_TOKEN:** a long secret code you make up.
+
+When it's deployed, open `https://<your blog's address>/setup-link?setup=<your code>` to make your admin account. Only someone with the code can finish the set-up. To use your own domain, open **Workers & Pages › blog-builder › Settings › Domains & Routes** and add it there.
+
+To update later, pull the latest code into your GitHub copy (GitHub's **Sync fork**, or copy the changes over) and Cloudflare rebuilds it.
+
+### 3. From the code
 
 Building Blog Builder builds EmDash too, so it takes a few minutes and needs git, Node.js 22 and about 6 GB of memory.
 
@@ -53,6 +66,8 @@ npm run build      # checks out EmDash at the pinned version and builds the blog
 npm run package    # turns the build into the installer
 npm run setup      # installs it, as above
 ```
+
+Or deploy it with Wrangler instead of the installer: set the theme in `wrangler.jsonc`, put your set-up code in a `SETUP_TOKEN` secret (`npx wrangler secret put SETUP_TOKEN`), then run `npm run deploy`.
 
 ## Themes
 

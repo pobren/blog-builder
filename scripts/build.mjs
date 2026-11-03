@@ -50,7 +50,21 @@ run("corepack", ["pnpm", "build"]);
 // 3. The blog template with our files over it.
 const template = join(emdash, "templates/blog-cloudflare");
 cpSync(join(root, "overlay"), template, { recursive: true });
+// Wrangler's settings for the blog: this repo's wrangler.jsonc (the Deploy to Cloudflare button fills in
+// the storage it made for you), pointed at the template's own entry point, with this release's number.
+const wrangler = JSON.parse(withoutComments(readFileSync(join(root, "wrangler.jsonc"), "utf8")));
+delete wrangler.$schema;
+wrangler.main = "./src/worker.ts";
+wrangler.vars = { ...wrangler.vars, APP_VERSION: release.version };
+writeFileSync(join(template, "wrangler.jsonc"), `${JSON.stringify(wrangler, null, "\t")}\n`);
 writeFileSync(join(template, ".blog-builder-version"), `${release.version}\n`);
 run("corepack", ["pnpm", "build"], template);
 
 console.log(`\nBlog Builder ${release.version} built in ${join(template, "dist")}.\nNext: npm run package`);
+
+// JSONC to JSON: drops comments and trailing commas, leaving strings alone.
+function withoutComments(text) {
+	return text
+		.replace(/"(?:[^"\\]|\\.)*"|\/\/[^\n]*|\/\*[\s\S]*?\*\//g, (m) => (m.startsWith('"') ? m : ""))
+		.replace(/,(\s*[}\]])/g, "$1");
+}

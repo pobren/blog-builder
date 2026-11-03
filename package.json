@@ -19,7 +19,8 @@
 		"setup": "node npm/cli.mjs setup",
 		"update": "node npm/cli.mjs update",
 		"test": "node --experimental-strip-types --test test/*.test.ts installer/test/*.test.ts",
-		"typecheck": "tsc -p installer"
+		"typecheck": "tsc -p installer",
+		"deploy": "node scripts/deploy.mjs"
 	},
 	"engines": {
 		"node": ">=22"
@@ -29,5 +30,23 @@
 		"@types/node": "^20.19.37",
 		"esbuild": "^0.25.0",
 		"typescript": "^5.8.3"
+	},
+	"cloudflare": {
+		"label": "Blog Builder",
+		"products": [
+			"Workers",
+			"D1",
+			"R2",
+			"KV",
+			"Images"
+		],
+		"bindings": {
+			"THEME": {
+				"description": "The theme your blog starts with, such as `notebook`. You can switch to any of the 16 themes later in your blog's admin."
+			},
+			"SETUP_TOKEN": {
+				"description": "A long secret code you choose. After deploying, open `https://<your blog>/setup-link?setup=<your code>` to finish setting up. Only someone with the code can become the blog's admin."
+			}
+		}
 	}
 }

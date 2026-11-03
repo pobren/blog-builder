@@ -1,0 +1,14 @@
+{
+	"$schema": "https://unpkg.com/wrangler@4/config-schema.json",
+	"name": "blog-builder",
+	"main": ".emdash/templates/blog-cloudflare/src/worker.ts",
+	"compatibility_date": "2026-02-24",
+	"compatibility_flags": ["nodejs_compat"],
+	"d1_databases": [{ "binding": "DB", "database_name": "blog-builder" }],
+	"r2_buckets": [{ "binding": "MEDIA", "bucket_name": "blog-builder-media" }],
+	"kv_namespaces": [{ "binding": "SESSION" }],
+	"images": { "binding": "IMAGES" },
+	"vars": { "THEME": "notebook" },
+	"triggers": { "crons": ["* * * * *"] },
+	"observability": { "enabled": true }
+}

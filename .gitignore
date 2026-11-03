@@ -4,3 +4,4 @@ npm/*
 !npm/.gitkeep
 .DS_Store
 *.log
+.wrangler/

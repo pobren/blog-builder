@@ -1,0 +1,3 @@
+# The set-up code: only someone with it can finish setting up the blog and become its admin.
+# Pick any long code, then open https://<your blog>/setup-link?setup=<your code> after deploying.
+SETUP_TOKEN=pick-a-long-secret-code
