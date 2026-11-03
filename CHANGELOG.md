@@ -1,7 +1,7 @@
 # What's new in Blog Builder
 
 ## 2.0.0: Free and Open Source
-_2026-11-04_
+_2026-11-03_
 
 - Free and Open Source: Blog Builder is now free for everyone, with the code on GitHub under the MIT licence. There's no licence key or trial, and every theme is included.
 - Pick Your Theme in the Admin: Choose any of the 16 themes on the Blog Builder page in your blog's admin, and switch whenever you like.
