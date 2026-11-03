@@ -1,0 +1,77 @@
+/* Blog Builder theme: Portfolio. The name set huge, then the work in big pictures
+   (src/components/homes/Portfolio.astro), with quiet, wide project pages.
+   Every rule starts with the theme's name on <html>, so it beats the template's own styles. */
+:root[data-bb-theme="portfolio"] {
+	--color-bg: light-dark(#f3f1ec, #0e0e0e);
+	--color-surface: light-dark(#fbfaf7, #161616);
+	--color-fill: light-dark(#e8e5de, #1d1d1d);
+	--color-fill-strong: light-dark(#dcd8cf, #272727);
+	--color-text: light-dark(#0f0f0f, #f1efe9);
+	--color-text-secondary: light-dark(#3a3a3a, #c8c5be);
+	--color-muted: light-dark(#76736c, #8f8c85);
+	--color-border: light-dark(#d9d5cc, #262626);
+	--color-border-subtle: light-dark(#e4e0d8, #1e1e1e);
+	--color-border-strong: light-dark(#c4bfb4, #333333);
+	--color-brand: light-dark(#ff4f1f, #ff7a52);
+	--color-brand-hover: light-dark(#d93a0e, #ff9c7d);
+	--color-on-brand: light-dark(#ffffff, #1a0700);
+	--font-heading: var(--font-display), system-ui, sans-serif;
+	--font-weight-heading: 800;
+	--font-weight-display: 800;
+	--tracking-tight: -0.04em;
+	--radius-lg: 6px;
+	--radius-xl: 8px;
+	--shadow-card: none;
+	--shadow-card-hover: none;
+}
+:root[data-bb-theme="portfolio"] .band::before,
+:root[data-bb-theme="portfolio"] .band::after {
+	display: none;
+}
+:root[data-bb-theme="portfolio"] .site-header {
+	background: transparent;
+	border-bottom: 0;
+}
+:root[data-bb-theme="portfolio"] .brand__name {
+	font-family: var(--font-heading);
+	font-weight: 800;
+	letter-spacing: -0.03em;
+}
+:root[data-bb-theme="portfolio"] .site-nav a {
+	font-weight: 600;
+}
+:root[data-bb-theme="portfolio"] .btn {
+	border-radius: 999px;
+	font-weight: 700;
+}
+/* Project pages: a huge title and the picture at full width. */
+:root[data-bb-theme="portfolio"] .post-header__title {
+	font-size: clamp(2.6rem, 1.4rem + 5vw, 5.5rem);
+	line-height: 0.95;
+	letter-spacing: -0.045em;
+}
+:root[data-bb-theme="portfolio"] .post-hero__media img {
+	border-radius: var(--radius-lg);
+}
+:root[data-bb-theme="portfolio"] .prose img {
+	border-radius: var(--radius-lg);
+}
+:root[data-bb-theme="portfolio"] .section-head__title,
+:root[data-bb-theme="portfolio"] .post__title {
+	font-family: var(--font-heading);
+	letter-spacing: -0.03em;
+}
+:root[data-bb-theme="portfolio"] .arrow-link {
+	color: var(--color-text);
+	font-weight: 700;
+}
+/* No frame rails: the home page runs edge to edge. */
+:root[data-bb-theme="portfolio"] body::before,
+:root[data-bb-theme="portfolio"] body::after,
+:root[data-bb-theme="portfolio"] .site-header::before,
+:root[data-bb-theme="portfolio"] .site-header::after {
+	display: none;
+}
+:root[data-bb-theme="portfolio"] .site-header__inner {
+	border-inline: 0;
+}

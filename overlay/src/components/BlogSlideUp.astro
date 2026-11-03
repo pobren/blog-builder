@@ -1,0 +1,129 @@
+---
+// The slide-up sign-up box: once a reader is halfway down a post, a small box slides up in the
+// corner with the same wording as the sign-up box under the post. Switched on under Sign-up forms in the admin
+// (the newsletter plugin's "slideUp" setting). Closing it puts it away on that device for a month.
+const { heading, blurb, siteKey, button = "Sign up", askName = "optional" } = Astro.props as { heading: string; blurb: string; siteKey: string; button?: string; askName?: string };
+const withName = askName === "required";
+---
+
+<aside class="bb-slide" id="bb-slide" hidden aria-labelledby="bb-slide-title">
+	<button class="bb-slide__close" type="button" aria-label="Close">
+		<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+	</button>
+	<p class="bb-slide__title" id="bb-slide-title">{heading}</p>
+	{blurb && <p class="bb-slide__blurb">{blurb}</p>}
+	<form class="bb-form" data-rc-goal="Newsletter sign-up" data-bb-form="/_emdash/api/plugins/newsletter/subscribe" data-bb-done="Thanks, you're on the list.">
+		<label class="sr-only" for="bb-slide-email">Email address</label>
+		{withName && <label class="sr-only" for="bb-slide-name">Your name</label>}
+		{withName && <input id="bb-slide-name" name="name" type="text" maxlength="80" required autocomplete="name" placeholder="Your name" />}
+		<input id="bb-slide-email" name="email" type="email" required autocomplete="email" placeholder="you@example.com" />
+		<input class="bb-hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+		{siteKey && <div class="cf-turnstile" data-sitekey={siteKey} />}
+		<button class="btn" type="submit">{button}</button>
+		<p class="bb-form__note" role="status" aria-live="polite"></p>
+	</form>
+</aside>
+
+<style is:global>
+	.bb-slide {
+		position: fixed;
+		right: var(--spacing-4);
+		bottom: var(--spacing-4);
+		z-index: 60;
+		width: min(21rem, calc(100vw - var(--spacing-8)));
+		background: var(--color-surface);
+		border: 1px solid var(--color-border-strong);
+		border-radius: var(--radius-lg, 1rem);
+		box-shadow: 0 18px 40px rgb(0 0 0 / 0.18);
+		padding: var(--spacing-5);
+		transform: translateY(130%);
+		transition: transform 0.35s ease;
+	}
+	.bb-slide[data-open] {
+		transform: translateY(0);
+	}
+	.bb-slide__title {
+		margin: 0;
+		font-size: var(--font-size-lg);
+		font-weight: 700;
+		padding-right: var(--spacing-6);
+	}
+	.bb-slide__blurb {
+		margin: var(--spacing-2) 0 var(--spacing-3);
+		color: var(--color-text-secondary);
+		font-size: var(--font-size-sm);
+	}
+	.bb-slide .bb-form {
+		display: grid;
+		gap: var(--spacing-2);
+	}
+	.bb-slide .btn {
+		width: 100%;
+		justify-content: center;
+	}
+	.bb-slide__close {
+		position: absolute;
+		top: var(--spacing-2);
+		right: var(--spacing-2);
+		display: grid;
+		place-items: center;
+		width: 2rem;
+		height: 2rem;
+		border: 0;
+		border-radius: 999px;
+		background: transparent;
+		color: var(--color-text-secondary);
+		cursor: pointer;
+	}
+	.bb-slide__close:hover {
+		background: var(--color-surface-alt, rgb(0 0 0 / 0.06));
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.bb-slide {
+			transition: none;
+		}
+	}
+	@media (max-width: 720px) {
+		.bb-slide {
+			right: var(--spacing-3);
+			left: var(--spacing-3);
+			bottom: var(--spacing-3);
+			width: auto;
+		}
+	}
+</style>
+
+<script is:inline>
+	(function () {
+		var box = document.getElementById("bb-slide");
+		if (!box) return;
+		var KEY = "bb-slide-closed";
+		var MONTH = 30 * 24 * 60 * 60 * 1000;
+		try {
+			var put = Number(localStorage.getItem(KEY) || 0);
+			if (put && Date.now() - put < MONTH) return;
+		} catch (e) {}
+		var shown = false;
+		var look = function () {
+			if (shown) return;
+			var seen = window.scrollY + window.innerHeight;
+			if (seen < document.body.scrollHeight * 0.5) return;
+			shown = true;
+			box.hidden = false;
+			// A frame later, so the box slides up rather than appearing in place.
+			requestAnimationFrame(function () { box.setAttribute("data-open", ""); });
+			window.removeEventListener("scroll", look);
+		};
+		window.addEventListener("scroll", look, { passive: true });
+		look();
+		box.querySelector(".bb-slide__close").onclick = function () {
+			box.removeAttribute("data-open");
+			setTimeout(function () { box.hidden = true; }, 350);
+			try { localStorage.setItem(KEY, String(Date.now())); } catch (e) {}
+		};
+		// Signed up from here: put it away for good on this device.
+		box.querySelector("form").addEventListener("submit", function () {
+			try { localStorage.setItem(KEY, String(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000)); } catch (e) {}
+		});
+	})();
+</script>

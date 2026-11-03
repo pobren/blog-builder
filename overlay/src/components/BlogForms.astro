@@ -1,0 +1,47 @@
+---
+// Sends the sign-up and contact forms to their plugin routes, and loads
+// Cloudflare Turnstile only on pages that have a form that uses it.
+const { turnstile } = Astro.props as { turnstile: boolean };
+---
+
+{turnstile && <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer is:inline></script>}
+<script is:inline>
+	(function () {
+		var shown = Date.now();
+		document.querySelectorAll("form[data-bb-form]").forEach(function (form) {
+			// A page can carry this script twice (a premium home page and the layout); wire each form once.
+			if (form.hasAttribute("data-bb-ready")) return;
+			form.setAttribute("data-bb-ready", "");
+			var note = form.querySelector(".bb-form__note");
+			form.addEventListener("submit", function (e) {
+				e.preventDefault();
+				var body = { shown: shown, from: location.pathname };
+				new FormData(form).forEach(function (v, k) { body[k === "cf-turnstile-response" ? "turnstile" : k] = v; });
+				var button = form.querySelector("button[type=submit]");
+				button.disabled = true;
+				note.textContent = "Sending…";
+				fetch(form.getAttribute("data-bb-form"), {
+					method: "POST",
+					headers: { "content-type": "application/json", "X-EmDash-Request": "1" },
+					body: JSON.stringify(body),
+				})
+					.then(function (r) { return r.json(); })
+					.then(function (r) {
+						var data = r && r.data !== undefined ? r.data : r;
+						if (data && data.ok) {
+							form.reset();
+							form.classList.add("bb-form--done");
+							note.textContent = data.message || form.getAttribute("data-bb-done");
+						} else {
+							note.textContent = (data && data.message) || "That didn't work. Please try again.";
+							button.disabled = false;
+						}
+					})
+					.catch(function () {
+						note.textContent = "That didn't send. Please check your connection and try again.";
+						button.disabled = false;
+					});
+			});
+		});
+	})();
+</script>

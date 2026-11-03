@@ -1,0 +1,313 @@
+---
+// Move from Ghost (25 Oct 2026): the page a writer uses to bring a whole Ghost site across. Opened from the Blog
+// Builder page in the admin (src/builder-plugin/plugin.ts). The files are read in the browser (src/ghost.ts) and
+// saved through the engine's own import and content APIs, so only the blog's admins can use it, and nothing leaves
+// the blog.
+export const prerender = false;
+
+const ADMIN = 50;
+const user = (Astro.locals as { user?: { role?: number } }).user;
+const allowed = !!user && (user.role ?? 0) >= ADMIN;
+Astro.response.headers.set("Cache-Control", "no-store");
+if (!allowed) Astro.response.status = 403;
+---
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Move from Ghost</title>
+<style>
+	:root { color-scheme: light dark; --bg: #f6f7f8; --sheet: #fff; --ink: #14181c; --soft: #5b6670; --line: #dde2e6; --accent: #12262b; --ok: #15803d; --warn: #b45309; }
+	@media (prefers-color-scheme: dark) { :root { --bg: #111417; --sheet: #1a1f23; --ink: #eef1f3; --soft: #9aa6af; --line: #2c343a; --accent: #e8eef0; --ok: #4ade80; --warn: #f59e0b; } }
+	* { box-sizing: border-box; }
+	body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+	main { max-width: 760px; margin: 0 auto; padding: 32px 16px 64px; }
+	a { color: inherit; }
+	.back { display: inline-flex; gap: 6px; align-items: center; color: var(--soft); text-decoration: none; font-size: .95rem; }
+	h1 { font-size: 2rem; letter-spacing: -0.02em; margin: 12px 0 6px; }
+	.lede { color: var(--soft); margin: 0 0 24px; }
+	.card { background: var(--sheet); border: 1px solid var(--line); border-radius: 16px; padding: 24px; margin: 0 0 20px; }
+	.card h2 { font-size: 1.15rem; margin: 0 0 12px; }
+	ol.how { margin: 0; padding-left: 1.2em; color: var(--soft); }
+	ol.how li { margin: 4px 0; }
+	label { display: block; font-weight: 650; margin: 16px 0 6px; }
+	.opt { font-weight: 400; color: var(--soft); }
+	.hint { color: var(--soft); font-size: .9rem; margin: 4px 0 0; }
+	input[type=text], input[type=file] { font: inherit; width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); }
+	.checks label { font-weight: 500; display: flex; gap: 10px; align-items: flex-start; margin: 10px 0; }
+	.checks input { margin-top: 5px; }
+	button { font: inherit; font-weight: 650; display: inline-flex; gap: 8px; align-items: center; padding: 11px 20px; border-radius: 999px; border: 1px solid var(--accent); background: var(--accent); color: var(--sheet); cursor: pointer; margin-top: 18px; }
+	button[disabled] { opacity: .5; cursor: default; }
+	button svg { width: 18px; height: 18px; }
+	.summary { font-size: 1.1rem; font-weight: 600; margin: 0 0 8px; }
+	.notes { margin: 8px 0 0; padding-left: 1.2em; color: var(--soft); }
+	.notes li { margin: 4px 0; }
+	progress { width: 100%; height: 12px; margin: 8px 0; accent-color: var(--accent); }
+	#status { margin: 6px 0 0; font-weight: 500; }
+	.err { color: #b91c1c; font-weight: 600; }
+	@media (prefers-color-scheme: dark) { .err { color: #f87171; } }
+	.done li { margin: 4px 0; }
+	.hidden { display: none; }
+</style>
+</head>
+<body>
+<main>
+	<a class="back" href="/_emdash/admin"><svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4 6 10l6 6"/></svg>Back to your blog's admin</a>
+	<h1>Move from Ghost</h1>
+	{allowed ? (
+	<>
+	<p class="lede">Bring your Ghost posts, pages, tags, authors, pictures and old links across in one go. Your files are read here in your browser and go only to this blog.</p>
+
+	<section class="card">
+		<h2>Before you start</h2>
+		<ol class="how">
+			<li>In Ghost, go to Settings, then Import/Export, and press <b>Export content</b>. That gives you one .json file.</li>
+			<li>If you set up redirects in Ghost (Settings, then Labs), download your redirects file too.</li>
+			<li>Keep your Ghost site running until the move is finished, as your pictures are copied from it.</li>
+		</ol>
+	</section>
+
+	<section class="card" id="step-files">
+		<h2>1. Choose your files</h2>
+		<label for="export">Ghost content export <span class="opt">(.json)</span></label>
+		<input id="export" type="file" accept=".json,application/json">
+		<label for="site">Your Ghost site's address</label>
+		<input id="site" type="text" inputmode="url" placeholder="myblog.com" autocomplete="off">
+		<p class="hint">We copy your pictures from here. Use the address readers see, such as myblog.com or myblog.ghost.io.</p>
+		<label for="redirects">Redirects file <span class="opt">(optional, .json or .yaml)</span></label>
+		<input id="redirects" type="file" accept=".json,.yaml,.yml,application/json,text/yaml">
+		<button id="check" type="button"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="9" r="5.5"/><path d="m17 17-3.8-3.8"/></svg>Check my files</button>
+		<p id="check-msg" class="hint" aria-live="polite"></p>
+	</section>
+
+	<section class="card hidden" id="step-preview">
+		<h2>2. Check what comes across</h2>
+		<p class="summary" id="summary"></p>
+		<ul class="notes" id="notes"></ul>
+		<div class="checks">
+			<label><input type="checkbox" id="do-pictures" checked> Copy pictures and files from my Ghost site</label>
+			<label><input type="checkbox" id="do-seo" checked> Bring search titles, descriptions and sharing pictures</label>
+			<label><input type="checkbox" id="do-redirects" checked> Add redirects so old links keep working</label>
+		</div>
+		<p class="hint">Posts already here with the same address are left as they are, so running the move again never makes copies.</p>
+		<button id="move" type="button"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10h12M11 6l4 4-4 4"/></svg>Move my blog</button>
+	</section>
+
+	<section class="card hidden" id="step-run">
+		<h2>3. Moving</h2>
+		<progress id="bar" max="100" value="0"></progress>
+		<p id="status" aria-live="polite"></p>
+		<p class="hint">Keep this page open until it's finished. If it stops, run it again: what's already here is kept.</p>
+	</section>
+
+	<section class="card hidden" id="step-done">
+		<h2>Done</h2>
+		<p id="done-summary"></p>
+		<ul class="notes" id="done-notes"></ul>
+		<p>Have a look through your posts, then point your domain at this blog when you're happy.</p>
+		<ul class="done" id="done-list"></ul>
+	</section>
+	</>
+	) : (
+	<p class="lede">Please sign in to your blog's admin as an administrator first, then open this page again.</p>
+	)}
+</main>
+
+<script>
+	import { filesUsed, ghostHtmlToBlocks, readGhostExport, readRedirects, siteOrigin, summary, toWxr, type GhostSite, type Redirect } from "../ghost";
+
+	const API = "/_emdash/api";
+	const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+	const show = (id: string) => $(id).classList.remove("hidden");
+
+	// Nothing to run when the page only says to sign in first.
+	const ready = !!document.getElementById("check");
+	let site: GhostSite | null = null;
+	let origin = "";
+	let files: string[] = [];
+	let bodies = new Map<string, string>();
+	let redirects: Redirect[] = [];
+
+	async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
+		const headers = new Headers(init.headers);
+		headers.set("X-EmDash-Request", "1");
+		const res = await fetch(API + path, { ...init, headers, credentials: "same-origin" });
+		const body = await res.json().catch(() => ({}));
+		if (!res.ok) throw new Error(body?.error?.message || `The blog said no (${res.status}).`);
+		return (body?.data ?? body) as T;
+	}
+	const json = (body: unknown): RequestInit => ({ method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+
+	function progress(done: number, total: number, text: string) {
+		$<HTMLProgressElement>("bar").value = total ? Math.round((done / total) * 100) : 0;
+		$("status").textContent = text;
+	}
+
+	if (ready) $("check").addEventListener("click", async () => {
+		const msg = $("check-msg");
+		msg.className = "hint";
+		const file = $<HTMLInputElement>("export").files?.[0];
+		origin = siteOrigin($<HTMLInputElement>("site").value);
+		if (!file) { msg.textContent = "Please choose your Ghost content export."; return; }
+		if (!origin) { msg.textContent = "Please add your Ghost site's address, such as myblog.com."; return; }
+		if (file.size > 100 * 1024 * 1024) { msg.textContent = "That export is over 100 MB. Please get in touch and we'll move it for you."; return; }
+		msg.textContent = "Reading your files…";
+		try {
+			site = readGhostExport(JSON.parse(await file.text()), origin);
+			const parser = new DOMParser();
+			bodies = new Map();
+			let scripts = 0;
+			for (const p of site.posts) {
+				const out = ghostHtmlToBlocks(p.html, parser);
+				bodies.set(p.id, out.content);
+				scripts += out.scripts;
+			}
+			files = filesUsed(site, origin);
+			const red = $<HTMLInputElement>("redirects").files?.[0];
+			let skipped = 0;
+			redirects = [];
+			if (red) ({ redirects, skipped } = readRedirects(await red.text(), origin));
+			$("summary").textContent = summary(site, files.length, redirects.length) + ".";
+			const notes = [...site.notes];
+			if (scripts) notes.unshift(`${scripts.toLocaleString("en-GB")} bits of code in posts were taken out, so nothing runs by surprise. Add back anything you need by hand.`);
+			if (skipped) notes.unshift(`${skipped.toLocaleString("en-GB")} redirects use patterns and can't be added automatically. Add them under Redirects in your admin.`);
+			$("notes").replaceChildren(...notes.map((n) => Object.assign(document.createElement("li"), { textContent: n })));
+			msg.textContent = site.version ? `Ghost ${site.version} export read.` : "Export read.";
+			show("step-preview");
+			$("step-preview").scrollIntoView({ behavior: "smooth" });
+		} catch (e) {
+			msg.className = "hint err";
+			msg.textContent = e instanceof Error ? e.message : "That file couldn't be read.";
+		}
+	});
+
+	interface Analysis { postTypes: Array<{ name: string; suggestedCollection: string; requiredFields: unknown[]; schemaStatus: { canImport: boolean; reason?: string } }>; attachments: { items: Array<{ url?: string }> } }
+	interface Chunk { result: { imported: number; skipped: number; errors: Array<{ title: string; error: string }> }; done: boolean; cursor?: unknown; chunk?: unknown }
+	interface Media { imported: Array<{ originalUrl: string; newUrl: string }>; failed: Array<{ originalUrl: string; error: string }>; urlMap: Record<string, string> }
+
+	if (ready) $("move").addEventListener("click", async () => {
+		if (!site) return;
+		const doPictures = $<HTMLInputElement>("do-pictures").checked;
+		const doSeo = $<HTMLInputElement>("do-seo").checked;
+		const doRedirects = $<HTMLInputElement>("do-redirects").checked;
+		$<HTMLButtonElement>("move").disabled = true;
+		$<HTMLButtonElement>("check").disabled = true;
+		show("step-run");
+		$("step-run").scrollIntoView({ behavior: "smooth" });
+		const problems: string[] = [];
+		try {
+			const wxr = new File([toWxr(site, origin, bodies, doPictures ? files : [])], "ghost.xml", { type: "application/xml" });
+
+			progress(0, 1, "Checking your blog is ready…");
+			const form = new FormData();
+			form.append("file", wxr);
+			const analysis = await api<Analysis>("/import/wordpress/analyze", { method: "POST", body: form });
+			const types = analysis.postTypes.filter((t) => t.name === "post" || t.name === "page");
+			const blocked = types.find((t) => !t.schemaStatus.canImport);
+			if (blocked) throw new Error(blocked.schemaStatus.reason || "This blog can't take these posts yet.");
+			await api("/import/wordpress/prepare", json({ postTypes: types.map((t) => ({ name: t.name, collection: t.suggestedCollection, fields: t.requiredFields })) }));
+			const config = { postTypeMappings: Object.fromEntries(types.map((t) => [t.name, { collection: t.suggestedCollection, enabled: true }])), skipExisting: true };
+
+			// Posts and pages, a chunk at a time, as the admin's own WordPress import does.
+			const total = site.posts.length;
+			let imported = 0, kept = 0;
+			const step = async (phase: string, cursor?: unknown, chunk?: unknown) => {
+				const f = new FormData();
+				f.append("file", wxr);
+				f.append("config", JSON.stringify(config));
+				f.append("phase", phase);
+				if (cursor) f.append("cursor", JSON.stringify(cursor));
+				if (chunk) f.append("chunk", JSON.stringify(chunk));
+				const out = await api<Chunk>("/import/wordpress/execute", { method: "POST", body: f });
+				imported += out.result.imported;
+				kept += out.result.skipped;
+				for (const e of out.result.errors) problems.push(`${e.title}: ${e.error}`);
+				return out;
+			};
+			progress(0, total, "Adding your tags and authors…");
+			let out = await step("taxonomy");
+			while (!out.done) {
+				out = await step("content", out.cursor, out.chunk);
+				progress(imported + kept, total, `Posts and pages: ${imported + kept} of ${total}`);
+				if (out.done) break;
+			}
+			if (out.cursor) await step("finalize", out.cursor, out.chunk);
+
+			// Pictures and files, five at a time so each request stays well inside the blog's limits.
+			let urlMap: Record<string, string> = {};
+			const fresh: Array<{ originalUrl: string; newUrl: string }> = [];
+			if (doPictures) {
+				const items = analysis.attachments.items;
+				for (let i = 0; i < items.length; i += 5) {
+					progress(i, items.length, `Pictures and files: ${i} of ${items.length}`);
+					const media = await api<Media>("/import/wordpress/media", json({ attachments: items.slice(i, i + 5), stream: false }));
+					Object.assign(urlMap, media.urlMap);
+					fresh.push(...media.imported);
+					for (const f of media.failed) problems.push(`${f.originalUrl.split("/").pop()}: ${f.error}`);
+				}
+				if (Object.keys(urlMap).length) {
+					progress(1, 1, "Pointing your posts at the new pictures…");
+					await api("/import/wordpress/rewrite-urls", json({ urlMap }));
+				}
+			}
+
+			// Search titles, descriptions, sharing pictures and canonical addresses.
+			if (doSeo) {
+				const withSeo = site.posts.filter((p) => p.seo.title || p.seo.description || p.seo.image || p.seo.canonical);
+				const collections = new Map(types.map((t) => [t.name, t.suggestedCollection]));
+				let n = 0;
+				for (const p of withSeo) {
+					progress(n++, withSeo.length, `Search details: ${n} of ${withSeo.length}`);
+					const image = p.seo.image ? urlMap[p.seo.image] ?? p.seo.image : undefined;
+					const seo = { title: p.seo.title?.slice(0, 200), description: p.seo.description?.slice(0, 500), image, canonical: p.seo.canonical };
+					try {
+						await api(`/content/${collections.get(p.type) ?? `${p.type}s`}/${encodeURIComponent(p.slug)}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ seo, skipRevision: true }) });
+					} catch (e) {
+						problems.push(`${p.title}: search details not saved (${e instanceof Error ? e.message : "error"})`);
+					}
+				}
+			}
+
+			// Redirects: the writer's own from Ghost. Old post addresses (/my-post/), /rss/ and /author/ are handled
+			// by the blog itself (src/old-addresses.ts).
+			let added = 0;
+			if (doRedirects) {
+				for (const r of redirects) {
+					progress(added, redirects.length, `Redirects: ${added} of ${redirects.length}`);
+					try {
+						await api("/redirects", json({ source: r.from, destination: r.to, type: r.permanent ? 301 : 302, groupName: "Moved from Ghost" }));
+						added++;
+					} catch {
+						// Already there, or an address the blog won't take: left as it is.
+					}
+				}
+			}
+
+			progress(1, 1, "Finished.");
+			show("step-done");
+			const bits = [`${imported.toLocaleString("en-GB")} posts and pages moved`];
+			if (kept) bits.push(`${kept.toLocaleString("en-GB")} already here and left as they were`);
+			if (doPictures) bits.push(`${fresh.length.toLocaleString("en-GB")} pictures and files copied`);
+			if (added) bits.push(`${added.toLocaleString("en-GB")} redirects added`);
+			$("done-summary").textContent = bits.join(", ") + ".";
+			$("done-notes").replaceChildren(...problems.slice(0, 50).map((p) => Object.assign(document.createElement("li"), { textContent: p })));
+			const links = site.posts.filter((p) => p.status === "publish").slice(0, 200).map((p) => {
+				const li = document.createElement("li");
+				const a = Object.assign(document.createElement("a"), { href: `/${p.type === "page" ? "pages" : "posts"}/${encodeURIComponent(p.slug)}`, textContent: p.title, target: "_blank", rel: "noopener" });
+				li.append(a);
+				return li;
+			});
+			$("done-list").replaceChildren(...links);
+			$("step-done").scrollIntoView({ behavior: "smooth" });
+		} catch (e) {
+			$("status").className = "err";
+			$("status").textContent = `${e instanceof Error ? e.message : "Something went wrong."} Run the move again to carry on: what's already here is kept.`;
+			$<HTMLButtonElement>("move").disabled = false;
+			$<HTMLButtonElement>("check").disabled = false;
+		}
+	});
+</script>
+</body>
+</html>

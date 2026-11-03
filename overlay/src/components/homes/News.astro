@@ -1,0 +1,70 @@
+---
+// Company news (basic): a dated news list, grouped by month, with each item's topic. No pictures
+// on the home page, so it reads like a newsroom. For businesses posting news and announcements.
+import { formatDate } from "../../utils/locale";
+
+const { posts, hasMore, siteTitle, siteTagline, section } = Astro.props;
+const href = (p: any) => `/posts/${p.id}`;
+const months = new Map<string, any[]>();
+for (const p of posts) {
+	const m = p.data.publishedAt ? new Date(p.data.publishedAt).toLocaleDateString("en-GB", { month: "long", year: "numeric", timeZone: "UTC" }) : "Earlier";
+	months.set(m, [...(months.get(m) ?? []), p]);
+}
+const day = (p: any) => (p.data.publishedAt ? new Date(p.data.publishedAt).toLocaleDateString("en-GB", { day: "numeric", timeZone: "UTC" }) : "");
+const dow = (p: any) => (p.data.publishedAt ? new Date(p.data.publishedAt).toLocaleDateString("en-GB", { weekday: "short", timeZone: "UTC" }) : "");
+---
+
+<header class="band nw-head">
+	<div class="frame">
+		<p class="nw-kicker">Newsroom</p>
+		<h1 class="nw-title">{siteTitle}</h1>
+		{siteTagline && <p class="nw-tagline">{siteTagline}</p>}
+	</div>
+</header>
+
+<section class="band nw-list" aria-label="News">
+	<div class="frame">
+		{[...months].map(([month, list]) => (
+			<div class="nw-month">
+				<h2 class="nw-month__label">{month}</h2>
+				<ul>
+					{list.map((p: any) => (
+						<li>
+							<a href={href(p)}>
+								<span class="nw-day"><b>{day(p)}</b>{dow(p)}</span>
+								<span class="nw-body">
+									{section(p) && <span class="nw-topic">{section(p).label}</span>}
+									<span class="nw-item__title">{p.data.title}</span>
+									{p.data.excerpt && <span class="nw-excerpt">{p.data.excerpt}</span>}
+								</span>
+							</a>
+						</li>
+					))}
+				</ul>
+			</div>
+		))}
+		{hasMore && <p class="nw-all"><a class="arrow-link" href="/posts">All news</a></p>}
+	</div>
+</section>
+
+<style>
+	.nw-head { padding-block: clamp(3rem, 6vw, 4.5rem) var(--spacing-8); border-bottom: 1px solid var(--color-border); }
+	.nw-kicker { margin: 0; font-size: var(--font-size-sm); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--color-brand); }
+	.nw-title { margin: var(--spacing-2) 0 0; font-size: clamp(2.2rem, 5vw, 3.4rem); font-weight: 800; line-height: 1.05; letter-spacing: -0.03em; }
+	.nw-tagline { margin: var(--spacing-3) 0 0; max-width: 36em; font-size: var(--font-size-lg); color: var(--color-text-secondary); }
+	.nw-list { padding-block: var(--spacing-6) var(--spacing-16); }
+	.nw-month { display: grid; grid-template-columns: 12rem minmax(0, 1fr); gap: var(--spacing-6); padding-block: var(--spacing-6); }
+	.nw-month + .nw-month { border-top: 1px solid var(--color-border); }
+	.nw-month__label { margin: 0; padding-top: var(--spacing-4); font-size: 1rem; font-weight: 700; color: var(--color-muted); }
+	.nw-month ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--spacing-2); }
+	.nw-month a { display: grid; grid-template-columns: 4rem minmax(0, 1fr); gap: var(--spacing-5); padding: var(--spacing-4); border-radius: var(--radius-lg); color: inherit; text-decoration: none; transition: background .15s; }
+	.nw-month a:hover { background: var(--color-fill); }
+	.nw-day { display: grid; justify-items: center; align-content: start; padding-top: 2px; font-size: .75rem; font-weight: 600; text-transform: uppercase; color: var(--color-muted); }
+	.nw-day b { font-size: 1.8rem; line-height: 1; color: var(--color-text); }
+	.nw-body { display: grid; gap: var(--spacing-1); }
+	.nw-topic { justify-self: start; padding: .1rem .55rem; border-radius: 999px; background: color-mix(in srgb, var(--color-brand) 12%, transparent); color: var(--color-brand); font-size: .75rem; font-weight: 700; }
+	.nw-item__title { font-size: 1.25rem; font-weight: 700; line-height: 1.3; }
+	.nw-excerpt { color: var(--color-muted); line-height: 1.5; }
+	.nw-all { margin: var(--spacing-6) 0 0; }
+	@media (max-width: 720px) { .nw-month { grid-template-columns: minmax(0, 1fr); gap: var(--spacing-2); } }
+</style>

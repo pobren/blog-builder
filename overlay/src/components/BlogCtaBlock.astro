@@ -1,0 +1,65 @@
+---
+// The "Call to action" block (src/extras/blocks.ts): a heading, a line and a button.
+const { node } = Astro.props as { node: { heading?: string; text?: string; button?: string; link?: string; look?: string } };
+const link = (node.link ?? "").trim();
+const href = /^(https:\/\/|\/)/.test(link) ? link : "";
+const heading = node.heading?.trim() ?? "";
+const button = node.button?.trim() || "Find out more";
+const outside = href.startsWith("https://");
+---
+
+{
+	(heading || href) && (
+		<aside class:list={["bb-cta", node.look === "soft" ? "bb-cta--soft" : "bb-cta--bold"]}>
+			{heading && <p class="bb-cta__heading">{heading}</p>}
+			{node.text?.trim() && <p class="bb-cta__text">{node.text.trim()}</p>}
+			{href && (
+				<a class="bb-cta__button" href={href} {...(outside ? { rel: "noopener" } : {})}>
+					{button}
+					<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+				</a>
+			)}
+		</aside>
+	)
+}
+
+<style>
+	.bb-cta {
+		margin-block: var(--spacing-8, 32px);
+		padding: var(--spacing-6, 24px) var(--spacing-6, 24px);
+		border-radius: var(--radius-lg, 12px);
+		text-align: center;
+	}
+	.bb-cta--bold {
+		background: var(--color-text, #1c1917);
+		color: var(--color-bg, #fff);
+	}
+	.bb-cta--soft {
+		border: 1px solid var(--color-border, #ddd);
+	}
+	.bb-cta__heading {
+		font-size: 1.4rem;
+		font-weight: 700;
+		line-height: 1.25;
+		margin: 0 0 8px;
+	}
+	.bb-cta__text {
+		margin: 0 0 16px;
+		opacity: 0.85;
+	}
+	.bb-cta__button {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		padding: 12px 22px;
+		border-radius: 999px;
+		font-weight: 600;
+		text-decoration: none;
+		background: var(--color-bg, #fff);
+		color: var(--color-text, #1c1917);
+	}
+	.bb-cta--soft .bb-cta__button {
+		background: var(--color-text, #1c1917);
+		color: var(--color-bg, #fff);
+	}
+</style>

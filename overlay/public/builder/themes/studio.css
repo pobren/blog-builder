@@ -1,0 +1,76 @@
+/* Blog Builder theme: Studio. Big pictures in a grid, short captions, black and white.
+   Every rule starts with the theme's name on <html>, so it beats the template's own styles. */
+:root[data-bb-theme="studio"] {
+	--color-bg: light-dark(#ffffff, #000000);
+	--color-surface: light-dark(#ffffff, #0b0b0b);
+	--color-fill: light-dark(#f2f2f2, #161616);
+	--color-text: light-dark(#0a0a0a, #f5f5f5);
+	--color-text-secondary: light-dark(#4a4a4a, #b5b5b5);
+	--color-border: light-dark(#e8e8e8, #1f1f1f);
+	--color-brand: light-dark(#0a0a0a, #f5f5f5);
+	--font-heading: var(--font-display), system-ui, sans-serif;
+	--font-weight-heading: 600;
+	--font-weight-display: 800;
+	--tracking-tight: -0.04em;
+	--radius-lg: 0;
+	--radius-xl: 0;
+	--radius-full: 0;
+	--card-padding: 0;
+	--shadow-card: none;
+	--shadow-card-hover: none;
+	--wide-width: 1440px;
+}
+:root[data-bb-theme="studio"] .band::before,
+:root[data-bb-theme="studio"] .band::after {
+	display: none;
+}
+:root[data-bb-theme="studio"] .intro__title {
+	font-size: clamp(2.75rem, 1.5rem + 5.5vw, 6rem);
+	line-height: 0.95;
+}
+:root[data-bb-theme="studio"] .eyebrow {
+	letter-spacing: 0.2em;
+}
+/* Two big pictures to a row, captions underneath. */
+:root[data-bb-theme="studio"] .post-grid {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--spacing-12) var(--spacing-6);
+}
+:root[data-bb-theme="studio"] .post--card {
+	background: transparent;
+}
+:root[data-bb-theme="studio"] .post--card .post__media {
+	aspect-ratio: 4 / 5;
+	overflow: hidden;
+}
+:root[data-bb-theme="studio"] .post--card .post__media img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 600ms var(--ease-out);
+}
+:root[data-bb-theme="studio"] .post--card:hover .post__media img {
+	transform: scale(1.03);
+}
+:root[data-bb-theme="studio"] .post--card .post__body {
+	padding: var(--spacing-4) 0 0;
+}
+:root[data-bb-theme="studio"] .post--card .post__title {
+	font-size: var(--font-size-xl);
+}
+:root[data-bb-theme="studio"] .post--card .post__excerpt,
+:root[data-bb-theme="studio"] .post--card .post__footer {
+	display: none;
+}
+:root[data-bb-theme="studio"] .post--feature {
+	background: transparent;
+}
+:root[data-bb-theme="studio"] .post--feature .post__title {
+	font-size: var(--font-size-5xl);
+	line-height: 1;
+}
+@media (max-width: 640px) {
+	:root[data-bb-theme="studio"] .post-grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}

@@ -1,0 +1,70 @@
+---
+// The themes' own home pages: every theme but Notebook has one.
+// src/pages/index.astro hands over here when the theme names a home page (src/themes-list.ts).
+// Each layout is its own component; colours and the post pages come from the theme's stylesheet.
+import { siteKeyFor } from "../../turnstile";
+import type { ContentEntry, InferCollectionData } from "emdash";
+import { getPluginSetting, getTaxonomyTerms, getTermsForEntries } from "emdash";
+import { businessDetails, mainButton, pluginOn } from "../../theme";
+import Magazine from "./Magazine.astro";
+import Portfolio from "./Portfolio.astro";
+import Hospitality from "./Hospitality.astro";
+import Saas from "./Saas.astro";
+import Letter from "./Letter.astro";
+import Help from "./Help.astro";
+import Events from "./Events.astro";
+import Developer from "./Developer.astro";
+import Gallery from "./Gallery.astro";
+import Podcast from "./Podcast.astro";
+import Journal from "./Journal.astro";
+import Practice from "./Practice.astro";
+import Local from "./Local.astro";
+import Studio from "./Studio.astro";
+import News from "./News.astro";
+
+type Post = ContentEntry<InferCollectionData<"posts">>;
+interface Props {
+	home: string;
+	posts: Post[];
+	hasMore: boolean;
+	siteTitle: string;
+	siteTagline?: string;
+}
+
+const { home, posts, hasMore, siteTitle, siteTagline } = Astro.props;
+const categories = await getTermsForEntries("posts", posts.map((p) => p.data.id), "category");
+const section = (p: Post) => {
+	const c = categories.get(p.data.id)?.[0];
+	return c ? { slug: c.slug, label: c.label } : null;
+};
+const [business, contact, button] = await Promise.all([
+	home === "portfolio" || home === "hospitality" || home === "help" || home === "events" || home === "gallery" || home === "practice" || home === "local" ? businessDetails() : null,
+	pluginOn("contact", "enabled", false),
+	mainButton(),
+]);
+// Letter puts the newsletter sign-up at the top; Help centre lists every category with its count.
+const newsletter = home === "letter" && (await pluginOn("newsletter", "enabled", true))
+	? {
+			siteKey: siteKeyFor(await getPluginSetting<string>("newsletter", "turnstileSiteKey").catch(() => ""), Astro.url.hostname),
+			askName: String((await getPluginSetting<string>("newsletter", "askName").catch(() => "")) || "optional"),
+		}
+	: null;
+const topics = home === "help" ? await getTaxonomyTerms("category").catch(() => []) : [];
+const props = { posts, hasMore, siteTitle, siteTagline, section, business, contact, button, newsletter, topics };
+---
+
+{home === "magazine" && <Magazine {...props} />}
+{home === "portfolio" && <Portfolio {...props} />}
+{home === "hospitality" && <Hospitality {...props} />}
+{home === "saas" && <Saas {...props} />}
+{home === "letter" && <Letter {...props} />}
+{home === "help" && <Help {...props} />}
+{home === "events" && <Events {...props} />}
+{home === "developer" && <Developer {...props} />}
+{home === "gallery" && <Gallery {...props} />}
+{home === "podcast" && <Podcast {...props} />}
+{home === "journal" && <Journal {...props} />}
+{home === "practice" && <Practice {...props} />}
+{home === "local" && <Local {...props} />}
+{home === "studio" && <Studio {...props} />}
+{home === "news" && <News {...props} />}

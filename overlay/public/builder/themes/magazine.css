@@ -1,0 +1,133 @@
+/* Blog Builder theme: Magazine. A newspaper front page (src/components/homes/Magazine.astro),
+   with serif headlines, red section labels and long-read story pages.
+   Every rule starts with the theme's name on <html>, so it beats the template's own styles. */
+:root[data-bb-theme="magazine"] {
+	--color-bg: light-dark(#ffffff, #111111);
+	--color-surface: light-dark(#ffffff, #171717);
+	--color-fill: light-dark(#f4f1ec, #1f1f1f);
+	--color-fill-strong: light-dark(#e9e4dc, #2a2a2a);
+	--color-text: light-dark(#111111, #f2f0ec);
+	--color-text-secondary: light-dark(#3d3d3d, #c9c6c0);
+	--color-muted: light-dark(#6b6b6b, #9a968f);
+	--color-border: light-dark(#e2ded6, #2c2c2c);
+	--color-border-subtle: light-dark(#eeebe5, #222222);
+	--color-border-strong: light-dark(#cfc9be, #3a3a3a);
+	--color-brand: light-dark(#b5121b, #ff6b6b);
+	--color-brand-hover: light-dark(#8e0e15, #ff9a9a);
+	--color-on-brand: light-dark(#ffffff, #1a0000);
+	--font-heading: var(--font-serif), Georgia, serif;
+	--font-weight-heading: 700;
+	--font-weight-display: 700;
+	--tracking-tight: -0.015em;
+	--radius: 0;
+	--radius-sm: 0;
+	--radius-lg: 0;
+	--radius-xl: 0;
+	--shadow-card: none;
+	--shadow-card-hover: none;
+}
+:root[data-bb-theme="magazine"] .band::before,
+:root[data-bb-theme="magazine"] .band::after {
+	display: none;
+}
+/* A slim black bar of a header, so the masthead below carries the name. */
+:root[data-bb-theme="magazine"] .site-header {
+	background: light-dark(#111111, #000000);
+	--color-text: #ffffff;
+	--color-muted: #bdbdbd;
+	--color-border: #2a2a2a;
+	--color-border-strong: #4a4a4a;
+	/* The signed-in Admin button and other surfaces in the bar: dark, so white text shows. */
+	--color-surface: #1f1f1f;
+	color: #ffffff;
+	border-bottom: 0;
+}
+:root[data-bb-theme="magazine"] .site-header .site-nav a {
+	font-size: 0.82rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+:root[data-bb-theme="magazine"] .brand__name {
+	font-family: var(--font-heading);
+	font-weight: 700;
+}
+/* Story pages: centred headline, a red section label and a wide picture. */
+:root[data-bb-theme="magazine"] .post-header__inner {
+	text-align: center;
+	max-width: 52rem;
+	margin-inline: auto;
+}
+:root[data-bb-theme="magazine"] .post-header__title {
+	font-size: clamp(2.3rem, 1.6rem + 3.4vw, 4rem);
+	line-height: 1.05;
+}
+:root[data-bb-theme="magazine"] .post-header .eyebrow,
+:root[data-bb-theme="magazine"] .eyebrow {
+	color: var(--color-brand);
+	font-weight: 800;
+	letter-spacing: 0.1em;
+}
+:root[data-bb-theme="magazine"] .post-header__lead {
+	font-family: var(--font-heading);
+	font-style: italic;
+	color: var(--color-text-secondary);
+}
+:root[data-bb-theme="magazine"] .prose > p:first-of-type::first-letter {
+	float: left;
+	font-family: var(--font-heading);
+	font-size: 4.2em;
+	line-height: 0.82;
+	padding: 0.06em 0.1em 0 0;
+	color: var(--color-brand);
+	font-weight: 700;
+}
+:root[data-bb-theme="magazine"] .prose blockquote {
+	border-left: 0;
+	border-top: 3px solid var(--color-text);
+	border-bottom: 1px solid var(--color-border);
+	padding: 1rem 0;
+	font-family: var(--font-heading);
+	font-size: 1.5em;
+	font-style: italic;
+}
+:root[data-bb-theme="magazine"] .section-head__title,
+:root[data-bb-theme="magazine"] .post__title {
+	font-family: var(--font-heading);
+}
+:root[data-bb-theme="magazine"] .site-footer {
+	border-top: 4px double var(--color-text);
+}
+/* No frame rails: the home page runs edge to edge. */
+:root[data-bb-theme="magazine"] body::before,
+:root[data-bb-theme="magazine"] body::after,
+:root[data-bb-theme="magazine"] .site-header::before,
+:root[data-bb-theme="magazine"] .site-header::after {
+	display: none;
+}
+:root[data-bb-theme="magazine"] .site-header .site-nav a {
+	color: #d4d4d4;
+	background: transparent;
+	box-shadow: none;
+	border-radius: 0;
+}
+:root[data-bb-theme="magazine"] .site-header .site-nav a:hover,
+:root[data-bb-theme="magazine"] .site-header .site-nav a[aria-current] {
+	color: #ffffff;
+	background: transparent;
+	box-shadow: inset 0 -2px 0 var(--color-brand);
+}
+:root[data-bb-theme="magazine"] .site-search,
+:root[data-bb-theme="magazine"] .site-search__field {
+	background: #1f1f1f;
+	color: #ffffff;
+	border-color: #333333;
+}
+:root[data-bb-theme="magazine"] .site-search-input {
+	background: #1f1f1f;
+	color: #ffffff;
+	border-color: #333333;
+}
+:root[data-bb-theme="magazine"] .site-header__inner {
+	border-inline: 0;
+}

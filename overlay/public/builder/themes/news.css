@@ -1,0 +1,57 @@
+/* Blog Builder theme: Company news. A dated list of updates, easy to scan.
+   Every rule starts with the theme's name on <html>, so it beats the template's own styles. */
+:root[data-bb-theme="news"] {
+	--color-bg: light-dark(#f8fafc, #0b1120);
+	--color-surface: light-dark(#ffffff, #111a2e);
+	--color-fill: light-dark(#eff4fb, #18233b);
+	--color-fill-strong: light-dark(#e2eaf6, #1f2c48);
+	--color-text: light-dark(#0f172a, #e5ecf6);
+	--color-text-secondary: light-dark(#475569, #a9b6c9);
+	--color-border: light-dark(#e2e8f0, #1e293b);
+	--color-brand: light-dark(#1d4ed8, #7aa2ff);
+	--color-brand-hover: light-dark(#1e40af, #a5c0ff);
+	--color-on-brand: light-dark(#ffffff, #0b1120);
+	--radius-lg: 8px;
+	--radius-xl: 12px;
+}
+:root[data-bb-theme="news"] .intro__title {
+	font-weight: 700;
+}
+:root[data-bb-theme="news"] .eyebrow {
+	color: var(--color-brand);
+}
+/* Each post is a row: date, title and summary, with a small picture on the right. */
+:root[data-bb-theme="news"] .post-grid {
+	grid-template-columns: minmax(0, 1fr);
+	gap: var(--spacing-3);
+}
+:root[data-bb-theme="news"] .post--card {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 11rem;
+	align-items: center;
+	gap: var(--spacing-6);
+	padding: var(--spacing-4);
+}
+:root[data-bb-theme="news"] .post--card .post__media {
+	order: 2;
+	aspect-ratio: 16 / 10;
+	border-radius: var(--radius-lg);
+	overflow: hidden;
+}
+:root[data-bb-theme="news"] .post--card .post__body {
+	padding: 0 0 0 var(--spacing-2);
+}
+:root[data-bb-theme="news"] .post__meta time {
+	color: var(--color-brand);
+	font-weight: 600;
+}
+:root[data-bb-theme="news"] .post--card .post__title {
+	font-size: var(--font-size-xl);
+}
+@media (max-width: 640px) {
+	:root[data-bb-theme="news"] .post--card {
+		grid-template-columns: minmax(0, 1fr) 6rem;
+		gap: var(--spacing-4);
+		padding: var(--spacing-3);
+	}
+}

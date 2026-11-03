@@ -1,0 +1,116 @@
+---
+// Magazine: a newspaper front page. Masthead, a lead story beside a numbered list of the latest,
+// then the rest in three columns and a link to every section.
+import { Image } from "emdash/ui";
+import { formatDate } from "../../utils/locale";
+import { formatReadingTime, getReadingTime } from "../../utils/reading-time";
+
+const { posts, hasMore, siteTitle, siteTagline, section } = Astro.props;
+const [lead, ...rest] = posts;
+const latest = rest.slice(0, 5);
+const more = rest.slice(5, 11);
+const today = new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+const href = (p: any) => `/posts/${p.id}`;
+const when = (p: any) => (p.data.publishedAt ? formatDate(p.data.publishedAt, "long") : "");
+const sections = [...new Map(posts.map((p: any) => section(p)).filter(Boolean).map((s: any) => [s.slug, s])).values()];
+---
+
+<header class="mag-head band">
+	<div class="frame">
+		<div class="mag-date"><span>{today}</span>{sections.length > 0 && <nav aria-label="Sections">{sections.map((s: any) => <a href={`/category/${s.slug}`}>{s.label}</a>)}</nav>}</div>
+		<h1 class="mag-title">{siteTitle}</h1>
+		{siteTagline && <p class="mag-tagline">{siteTagline}</p>}
+	</div>
+</header>
+
+{lead ? (
+	<section class="band mag-front" aria-label="Top stories">
+		<div class="frame mag-front__grid">
+			<article class="mag-lead">
+				{lead.data.featured_image && (
+					<a href={href(lead)} class="mag-lead__media" tabindex="-1" aria-hidden="true">
+						<Image image={lead.data.featured_image} sizes="(min-width: 1000px) 700px, 100vw" priority />
+					</a>
+				)}
+				{section(lead) && <a class="mag-kicker" href={`/category/${section(lead).slug}`}>{section(lead).label}</a>}
+				<h2 class="mag-lead__title"><a href={href(lead)}>{lead.data.title}</a></h2>
+				{lead.data.excerpt && <p class="mag-lead__excerpt">{lead.data.excerpt}</p>}
+				<p class="mag-meta">{when(lead)} · {formatReadingTime(getReadingTime(lead.data.content))}</p>
+			</article>
+			{latest.length > 0 && (
+				<aside class="mag-latest" aria-labelledby="mag-latest">
+					<h2 id="mag-latest" class="mag-rule">Latest</h2>
+					<ol>
+						{latest.map((p: any) => (
+							<li>
+								{section(p) && <span class="mag-kicker">{section(p).label}</span>}
+								<h3><a href={href(p)}>{p.data.title}</a></h3>
+								<p class="mag-meta">{when(p)}</p>
+							</li>
+						))}
+					</ol>
+				</aside>
+			)}
+		</div>
+	</section>
+) : (
+	<section class="band section"><div class="frame"><p>No stories yet. Write your first post in the admin.</p></div></section>
+)}
+
+{more.length > 0 && (
+	<section class="band mag-more" aria-labelledby="mag-more">
+		<div class="frame">
+			<h2 id="mag-more" class="mag-rule">More stories</h2>
+			<div class="mag-more__grid">
+				{more.map((p: any) => (
+					<article>
+						{p.data.featured_image && (
+							<a href={href(p)} class="mag-more__media" tabindex="-1" aria-hidden="true">
+								<Image image={p.data.featured_image} sizes="(min-width: 1000px) 340px, 100vw" />
+							</a>
+						)}
+						{section(p) && <span class="mag-kicker">{section(p).label}</span>}
+						<h3><a href={href(p)}>{p.data.title}</a></h3>
+						{p.data.excerpt && <p>{p.data.excerpt}</p>}
+					</article>
+				))}
+			</div>
+			{hasMore && <p class="mag-all"><a class="arrow-link" href="/posts">Every story</a></p>}
+		</div>
+	</section>
+)}
+
+<style>
+	.mag-head { padding-block: var(--spacing-8) var(--spacing-6); text-align: center; border-bottom: 4px double var(--color-text); }
+	.mag-date { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--spacing-2) var(--spacing-6); padding-bottom: var(--spacing-3); margin: 0 0 var(--spacing-6); border-bottom: 1px solid var(--color-border); font-size: var(--font-size-sm); color: var(--color-muted); }
+	.mag-date nav { display: flex; flex-wrap: wrap; gap: var(--spacing-4); }
+	.mag-date a { color: var(--color-text); text-decoration: none; font-weight: 600; }
+	.mag-date a:hover { color: var(--color-brand); }
+	.mag-title { margin: 0; font-family: var(--font-heading); font-size: clamp(2.8rem, 8vw, 6rem); line-height: 1; letter-spacing: -0.02em; font-weight: 700; }
+	.mag-tagline { margin: var(--spacing-3) auto 0; max-width: 40em; font-family: var(--font-heading); font-style: italic; font-size: var(--font-size-lg); color: var(--color-muted); }
+	.mag-front { padding-block: var(--spacing-8); }
+	.mag-front__grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--spacing-10); }
+	.mag-lead__media, .mag-more__media { display: block; overflow: hidden; margin-bottom: var(--spacing-4); }
+	.mag-lead__media :global(img), .mag-more__media :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; transition: transform .4s ease; }
+	.mag-lead__media:hover :global(img), .mag-more__media:hover :global(img) { transform: scale(1.03); }
+	.mag-kicker { display: inline-block; margin-bottom: var(--spacing-2); font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--color-brand); text-decoration: none; }
+	.mag-lead__title { margin: 0; font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 3.1rem); line-height: 1.08; letter-spacing: -0.015em; }
+	.mag-lead__title a, .mag-latest h3 a, .mag-more h3 a { color: inherit; text-decoration: none; }
+	.mag-lead__title a:hover, .mag-latest h3 a:hover, .mag-more h3 a:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+	.mag-lead__excerpt { margin: var(--spacing-4) 0 var(--spacing-3); font-size: var(--font-size-lg); line-height: 1.55; }
+	.mag-meta { margin: 0; font-size: var(--font-size-sm); color: var(--color-muted); }
+	.mag-rule { margin: 0 0 var(--spacing-4); padding-top: var(--spacing-2); border-top: 3px solid var(--color-text); font-size: .85rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+	.mag-latest ol { list-style: none; margin: 0; padding: 0; counter-reset: n; }
+	.mag-latest li { counter-increment: n; position: relative; padding: var(--spacing-4) 0 var(--spacing-4) 3rem; border-bottom: 1px solid var(--color-border); }
+	.mag-latest li::before { content: counter(n); position: absolute; left: 0; top: var(--spacing-3); font-family: var(--font-heading); font-size: 2.2rem; font-weight: 700; line-height: 1; color: var(--color-brand); }
+	.mag-latest h3 { margin: 0 0 var(--spacing-1); font-family: var(--font-heading); font-size: 1.2rem; line-height: 1.25; }
+	.mag-more { padding-block: var(--spacing-6) var(--spacing-10); }
+	.mag-more__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--spacing-8); }
+	.mag-more h3 { margin: 0 0 var(--spacing-2); font-family: var(--font-heading); font-size: 1.35rem; line-height: 1.2; }
+	.mag-more p { margin: 0; color: var(--color-muted); line-height: 1.5; }
+	.mag-all { margin: var(--spacing-8) 0 0; text-align: center; }
+	@media (max-width: 900px) {
+		.mag-front__grid, .mag-more__grid { grid-template-columns: minmax(0, 1fr); }
+		.mag-date { justify-content: center; }
+	}
+</style>

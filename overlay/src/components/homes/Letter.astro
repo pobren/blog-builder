@@ -1,0 +1,123 @@
+---
+// Letter: a personal newsletter. The sign-up box sits at the top, the newest letter is printed
+// almost in full, and past letters follow as a numbered list.
+import { Image } from "emdash/ui";
+import { formatDate } from "../../utils/locale";
+import BlogForms from "../BlogForms.astro";
+
+const { posts, hasMore, siteTitle, siteTagline, newsletter } = Astro.props;
+const [latest, ...past] = posts;
+const href = (p: any) => `/posts/${p.id}`;
+const when = (p: any) => (p.data.publishedAt ? formatDate(p.data.publishedAt, "long") : "");
+const author = (p: any) => p.data.bylines?.[0]?.byline?.displayName ?? "";
+// Issue numbers only make sense when every letter is on the page.
+const no = (i: number) => (hasMore ? null : posts.length - i);
+---
+
+<header class="lt-hero band">
+	<div class="frame lt-narrow">
+		<svg class="lt-kicker" aria-hidden="true" viewBox="0 0 48 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="1" y="1" width="46" height="30" rx="3" /><path d="M2 3l22 16L46 3" /></svg>
+		<h1 class="lt-title">{siteTitle}</h1>
+		{siteTagline && <p class="lt-tagline">{siteTagline}</p>}
+		{newsletter && (
+			<form class="bb-form lt-form" data-rc-goal="Newsletter sign-up" data-bb-form="/_emdash/api/plugins/newsletter/subscribe" data-bb-done="Thank you, you're on the list.">
+				{newsletter.askName !== "off" && <label class="sr-only" for="lt-name">{newsletter.askName === "required" ? "Your name" : "Your name (optional)"}</label>}
+				<label class="sr-only" for="lt-email">Email address</label>
+				<div class="lt-form__row">
+					{newsletter.askName !== "off" && <input id="lt-name" class="lt-form__name" name="name" type="text" maxlength="80" required={newsletter.askName === "required"} autocomplete="name" placeholder={newsletter.askName === "required" ? "Your name" : "Your name (optional)"} />}
+					<input id="lt-email" name="email" type="email" required autocomplete="email" placeholder="Your email address" />
+					<button class="btn" type="submit">Get the letter</button>
+				</div>
+				<input class="bb-hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+				{newsletter.siteKey && <div class="cf-turnstile" data-sitekey={newsletter.siteKey} />}
+				<p class="bb-form__note lt-form__note" role="status" aria-live="polite">Your email address is only used for this letter.</p>
+			</form>
+		)}
+	</div>
+</header>
+
+{latest && (
+	<article class="band lt-latest" aria-labelledby="lt-latest">
+		<div class="frame lt-narrow">
+			<p class="lt-meta">Latest letter{no(0) && <> · No. {no(0)}</>} · {when(latest)}</p>
+			<h2 id="lt-latest" class="lt-latest__title"><a href={href(latest)}>{latest.data.title}</a></h2>
+			{latest.data.featured_image && (
+				<a href={href(latest)} class="lt-latest__media" tabindex="-1" aria-hidden="true"><Image image={latest.data.featured_image} sizes="(min-width: 760px) 680px, 100vw" priority /></a>
+			)}
+			{latest.data.excerpt && <p class="lt-latest__excerpt">{latest.data.excerpt}</p>}
+			<p class="lt-latest__foot">
+				<a class="btn lt-read" href={href(latest)}>Read the letter</a>
+				{author(latest) && <span class="lt-sign">{author(latest)}</span>}
+			</p>
+		</div>
+	</article>
+)}
+
+{past.length > 0 && (
+	<section class="band lt-past" aria-labelledby="lt-past">
+		<div class="frame lt-narrow">
+			<h2 id="lt-past" class="lt-past__title">Past letters</h2>
+			<ol class="lt-list">
+				{past.map((p: any, i: number) => (
+					<li>
+						<a href={href(p)}>
+							<span class="lt-no">{no(i + 1) ? `No. ${no(i + 1)}` : ""}</span>
+							<span class="lt-list__body">
+								<span class="lt-list__title">{p.data.title}</span>
+								{p.data.excerpt && <span class="lt-list__excerpt">{p.data.excerpt}</span>}
+							</span>
+							<span class="lt-list__date">{when(p)}</span>
+						</a>
+					</li>
+				))}
+			</ol>
+			{hasMore && <p class="lt-all"><a class="arrow-link" href="/posts">Every letter</a></p>}
+		</div>
+	</section>
+)}
+
+{newsletter && <BlogForms turnstile={!!newsletter.siteKey} />}
+
+<style>
+	.lt-narrow { max-width: 46rem; margin-inline: auto; }
+	.lt-hero { padding-block: clamp(3.5rem, 9vw, 6.5rem) var(--spacing-12); text-align: center; border-bottom: 1px solid var(--color-border); }
+	.lt-kicker { display: block; width: 44px; height: 30px; margin: 0 auto var(--spacing-4); color: var(--color-brand); }
+	.lt-title { margin: var(--spacing-2) 0 0; font-family: var(--font-heading); font-size: clamp(2.8rem, 8vw, 5.2rem); line-height: 1; font-weight: 600; letter-spacing: -0.02em; }
+	.lt-tagline { margin: var(--spacing-4) auto 0; max-width: 32em; font-size: var(--font-size-lg); line-height: 1.6; color: var(--color-text-secondary); }
+	.lt-form { margin: var(--spacing-8) auto 0; max-width: 32rem; }
+	.lt-form__row { display: flex; gap: var(--spacing-2); padding: 6px; border: 1px solid var(--color-border-strong); border-radius: 999px; background: var(--color-surface); box-shadow: 0 12px 30px -20px rgb(60 40 20 / .35); }
+	.lt-form__name { flex: 0 1 11rem; min-width: 0; border: 0; border-right: 1px solid var(--color-border); background: transparent; padding: .7rem 1rem; font: inherit; color: inherit; outline: none; }
+	@media (max-width: 30rem) { .lt-form__row { flex-wrap: wrap; border-radius: 1.4rem; } .lt-form__name { flex-basis: 100%; border-right: 0; border-bottom: 1px solid var(--color-border); } }
+	.lt-form input[type="email"] { flex: 1; min-width: 0; border: 0; background: transparent; padding: .7rem 1rem; font: inherit; color: inherit; outline: none; }
+	.lt-form .btn { border-radius: 999px; padding: .75rem 1.3rem; white-space: nowrap; }
+	.lt-form:global(.bb-form--done) .lt-form__row,
+	.lt-form:global(.bb-form--done .cf-turnstile) { display: none; }
+	.lt-form__note { margin: var(--spacing-3) 0 0; font-size: var(--font-size-sm); color: var(--color-muted); }
+	.lt-latest { padding-block: var(--spacing-12); }
+	.lt-meta { margin: 0 0 var(--spacing-3); font-size: var(--font-size-sm); letter-spacing: .06em; text-transform: uppercase; color: var(--color-brand); font-weight: 600; }
+	.lt-latest__title { margin: 0; font-family: var(--font-heading); font-size: clamp(2rem, 4.5vw, 3.1rem); line-height: 1.1; font-weight: 600; letter-spacing: -0.015em; }
+	.lt-latest__title a { color: inherit; text-decoration: none; }
+	.lt-latest__media { display: block; margin-top: var(--spacing-6); border-radius: var(--radius-lg); overflow: hidden; }
+	.lt-latest__media :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+	.lt-latest__excerpt { margin: var(--spacing-6) 0 0; font-family: var(--font-heading); font-size: clamp(1.25rem, 2.2vw, 1.5rem); line-height: 1.6; }
+	.lt-latest__excerpt::first-letter { float: left; font-size: 3.4em; line-height: .85; padding: .05em .08em 0 0; color: var(--color-brand); font-weight: 600; }
+	.lt-latest__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--spacing-4); margin: var(--spacing-8) 0 0; }
+	.lt-read { border-radius: 999px; }
+	.lt-sign { font-family: var(--font-heading); font-style: italic; font-size: 1.6rem; color: var(--color-text-secondary); }
+	.lt-sign::before { content: "— "; }
+	.lt-past { padding-block: var(--spacing-10) var(--spacing-16); border-top: 1px solid var(--color-border); }
+	.lt-past__title { margin: 0 0 var(--spacing-4); font-family: var(--font-heading); font-style: italic; font-weight: 600; font-size: var(--font-size-2xl); }
+	.lt-list { list-style: none; margin: 0; padding: 0; }
+	.lt-list a { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr) auto; gap: var(--spacing-4); align-items: baseline; padding: var(--spacing-5) 0; border-bottom: 1px solid var(--color-border); color: inherit; text-decoration: none; }
+	.lt-list a:hover .lt-list__title { color: var(--color-brand); }
+	.lt-no { font-family: var(--font-heading); font-style: italic; color: var(--color-muted); }
+	.lt-list__body { display: grid; gap: var(--spacing-1); }
+	.lt-list__title { font-family: var(--font-heading); font-size: 1.35rem; font-weight: 600; line-height: 1.25; transition: color .15s; }
+	.lt-list__excerpt { color: var(--color-muted); line-height: 1.5; }
+	.lt-list__date { font-size: var(--font-size-sm); color: var(--color-muted); white-space: nowrap; }
+	.lt-all { margin: var(--spacing-8) 0 0; }
+	@media (max-width: 640px) {
+		.lt-list a { grid-template-columns: minmax(0, 1fr); gap: var(--spacing-1); }
+		.lt-form__row { flex-direction: column; border-radius: 18px; }
+	}
+</style>

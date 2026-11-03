@@ -1,0 +1,209 @@
+---
+// Import subscribers (25 Oct 2026): brings a list of subscribers in from another service, such as WordPress
+// (Jetpack or MailPoet), Mailchimp, Substack or Ghost. Opened from the Newsletter page in the admin. The file is
+// read in the browser (src/extras/import-csv.ts) and the addresses go to the newsletter plugin's "import"
+// route, which only the blog's admins can call.
+export const prerender = false;
+
+const ADMIN = 50;
+const user = (Astro.locals as { user?: { role?: number } }).user;
+const allowed = !!user && (user.role ?? 0) >= ADMIN;
+Astro.response.headers.set("Cache-Control", "no-store");
+if (!allowed) Astro.response.status = 403;
+---
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Import subscribers</title>
+<style>
+	:root { color-scheme: light dark; --bg: #f6f7f8; --sheet: #fff; --ink: #14181c; --soft: #5b6670; --line: #dde2e6; --accent: #12262b; --ok: #15803d; --warn: #b45309; }
+	@media (prefers-color-scheme: dark) { :root { --bg: #111417; --sheet: #1a1f23; --ink: #eef1f3; --soft: #9aa6af; --line: #2c343a; --accent: #e8eef0; --ok: #4ade80; --warn: #f59e0b; } }
+	* { box-sizing: border-box; }
+	body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+	main { max-width: 760px; margin: 0 auto; padding: 32px 16px 64px; }
+	a { color: inherit; }
+	.back { display: inline-flex; gap: 6px; align-items: center; color: var(--soft); text-decoration: none; font-size: .95rem; }
+	h1 { font-size: 2rem; letter-spacing: -0.02em; margin: 12px 0 6px; }
+	.lede { color: var(--soft); margin: 0 0 24px; }
+	.card { background: var(--sheet); border: 1px solid var(--line); border-radius: 16px; padding: 24px; margin: 0 0 20px; }
+	.card h2 { font-size: 1.15rem; margin: 0 0 12px; }
+	ol.how { margin: 0; padding-left: 1.2em; color: var(--soft); }
+	ol.how li { margin: 4px 0; }
+	label { display: block; font-weight: 650; margin: 16px 0 6px; }
+	.opt { font-weight: 400; color: var(--soft); }
+	.hint { color: var(--soft); font-size: .9rem; margin: 4px 0 0; }
+	input[type=text], input[type=file] { font: inherit; width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); }
+	.checks label { font-weight: 500; display: flex; gap: 10px; align-items: flex-start; margin: 10px 0; }
+	.checks input { margin-top: 5px; }
+	button { font: inherit; font-weight: 650; display: inline-flex; gap: 8px; align-items: center; padding: 11px 20px; border-radius: 999px; border: 1px solid var(--accent); background: var(--accent); color: var(--sheet); cursor: pointer; margin-top: 18px; }
+	button[disabled] { opacity: .5; cursor: default; }
+	button svg { width: 18px; height: 18px; }
+	.summary { font-size: 1.1rem; font-weight: 600; margin: 0 0 8px; }
+	.notes { margin: 8px 0 0; padding-left: 1.2em; color: var(--soft); }
+	.notes li { margin: 4px 0; }
+	progress { width: 100%; height: 12px; margin: 8px 0; accent-color: var(--accent); }
+	#status { margin: 6px 0 0; font-weight: 500; }
+	.err { color: #b91c1c; font-weight: 600; }
+	@media (prefers-color-scheme: dark) { .err { color: #f87171; } }
+	.done li { margin: 4px 0; }
+	.hidden { display: none; }
+</style>
+</head>
+<body>
+<main>
+	<a class="back" href="/_emdash/admin/plugins/newsletter/newsletter"><svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4 6 10l6 6"/></svg>Back to Newsletter</a>
+	<h1>Import subscribers</h1>
+	{allowed ? (
+	<>
+	<p class="lede">Bring your email subscribers across from WordPress, Mailchimp, Substack, Ghost or any other service. Your file is read here in your browser, and the addresses go only to this blog.</p>
+
+	<section class="card">
+		<h2>Before you start</h2>
+		<ol class="how">
+			<li><b>WordPress:</b> export your subscribers as a CSV file from Jetpack (Subscribers, then Export) or MailPoet (Subscribers, then Export).</li>
+			<li><b>Mailchimp:</b> Audience, then All contacts, then Export audience. Use the "subscribed" file.</li>
+			<li><b>Substack:</b> Settings, then Exports, then Create new export. Use the email list inside it.</li>
+			<li><b>Ghost:</b> Members, then the menu, then Export all members.</li>
+		</ol>
+		<p class="hint">Any CSV file or plain list works. We find the email address on each line, whatever the column is called. Paid subscribers come across as free subscribers.</p>
+	</section>
+
+	<section class="card" id="step-file">
+		<h2>1. Choose your file</h2>
+		<label for="file">Subscriber list <span class="opt">(.csv or .txt)</span></label>
+		<input id="file" type="file" accept=".csv,.txt,text/csv,text/plain">
+		<button id="check" type="button"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="9" r="5.5"/><path d="m17 17-3.8-3.8"/></svg>Check my file</button>
+		<p id="check-msg" class="hint" aria-live="polite"></p>
+	</section>
+
+	<section class="card hidden" id="step-preview">
+		<h2>2. Check and confirm</h2>
+		<p class="summary" id="summary"></p>
+		<ul class="notes" id="notes"></ul>
+		<div class="checks">
+			<label><input type="checkbox" id="consent"> These people signed up to get emails from me, and haven't asked to stop</label>
+			<label id="notice-row" class="hidden"><input type="checkbox" id="notice" checked> Send each of them a short email saying the blog has a new home, with a link to unsubscribe</label>
+		</div>
+		<p class="hint">People already on your list are left as they are, so anyone who unsubscribed here stays unsubscribed, and running it again never adds anyone twice.</p>
+		<button id="go" type="button" disabled><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10M6 9l4 4 4-4M4 17h12"/></svg>Import subscribers</button>
+	</section>
+
+	<section class="card hidden" id="step-run">
+		<h2>3. Importing</h2>
+		<progress id="bar" max="100" value="0"></progress>
+		<p id="status" aria-live="polite"></p>
+		<p class="hint">Keep this page open until it's finished. If it stops, run it again: anyone already added is kept.</p>
+	</section>
+
+	<section class="card hidden" id="step-done">
+		<h2>Done</h2>
+		<p id="done-summary"></p>
+		<ul class="notes" id="done-notes"></ul>
+		<p><a href="/_emdash/admin/plugins/newsletter/newsletter">See your subscribers</a></p>
+	</section>
+	</>
+	) : (
+	<p class="lede">Please sign in to your blog's admin as an administrator first, then open this page again.</p>
+	)}
+</main>
+
+<script>
+	import { emailsFromCsv } from "../extras/import-csv";
+
+	const ROUTE = "/_emdash/api/plugins/newsletter/import";
+	const BATCH = 50;
+	const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+	const show = (id: string) => $(id).classList.remove("hidden");
+	const n = (x: number) => x.toLocaleString("en-GB");
+	const people = (x: number) => `${n(x)} ${x === 1 ? "address" : "addresses"}`;
+
+	type Check = { ok: boolean; hosted?: boolean; subscribers?: number; room?: number | null; emailsLeft?: number | null; message?: string };
+	type Done = { ok: boolean; added?: number; already?: number; full?: number; noticeSent?: number; note?: string; message?: string };
+
+	async function call<T>(body: unknown): Promise<T> {
+		const res = await fetch(ROUTE, {
+			method: "POST",
+			headers: { "content-type": "application/json", "X-EmDash-Request": "1" },
+			credentials: "same-origin",
+			body: JSON.stringify(body),
+		});
+		const out = await res.json().catch(() => ({}));
+		if (!res.ok) throw new Error(out?.error?.message || `The blog said no (${res.status}).`);
+		return (out?.data ?? out) as T;
+	}
+
+	let emails: string[] = [];
+	let hosted = false;
+
+	if (document.getElementById("check")) {
+		$("check").addEventListener("click", async () => {
+			const file = $<HTMLInputElement>("file").files?.[0];
+			const msg = $("check-msg");
+			if (!file) return void (msg.textContent = "Choose your file first.");
+			msg.textContent = "Reading…";
+			try {
+				const found = emailsFromCsv(await file.text());
+				if (!found.emails.length) return void (msg.textContent = "We couldn't find any email addresses in that file. Is it the subscriber list?");
+				const plan = await call<Check>({ check: true });
+				if (!plan.ok) return void (msg.textContent = plan.message ?? "We couldn't check your blog just now.");
+				emails = found.emails;
+				hosted = !!plan.hosted;
+				msg.textContent = "";
+				$("summary").textContent = `Found ${people(emails.length)}.`;
+				const notes: string[] = [];
+				if (found.repeats) notes.push(`${people(found.repeats)} appeared more than once and will be added once.`);
+				if (found.skipped) notes.push(`${n(found.skipped)} ${found.skipped === 1 ? "line has" : "lines have"} no email address and will be left out.`);
+				if (hosted && plan.emailsLeft != null && plan.emailsLeft < Math.min(emails.length, plan.room ?? emails.length)) notes.push(`You have ${n(plan.emailsLeft)} emails left this month, so the "new home" email may not reach everyone.`);
+				$("notes").replaceChildren(...notes.map((t) => Object.assign(document.createElement("li"), { textContent: t })));
+				if (hosted) show("notice-row");
+				show("step-preview");
+			} catch (e) {
+				msg.textContent = e instanceof Error ? e.message : "Something went wrong.";
+			}
+		});
+
+		$<HTMLInputElement>("consent").addEventListener("change", (e) => {
+			$<HTMLButtonElement>("go").disabled = !(e.target as HTMLInputElement).checked;
+		});
+
+		$("go").addEventListener("click", async () => {
+			$<HTMLButtonElement>("go").disabled = true;
+			show("step-run");
+			const notice = hosted && $<HTMLInputElement>("notice").checked;
+			const total = { added: 0, already: 0, full: 0, noticeSent: 0 };
+			let note = "";
+			const bar = $<HTMLProgressElement>("bar");
+			try {
+				for (let i = 0; i < emails.length; i += BATCH) {
+					bar.value = Math.round((i / emails.length) * 100);
+					$("status").textContent = `Added ${n(total.added)} of ${n(emails.length)}…`;
+					const out = await call<Done>({ emails: emails.slice(i, i + BATCH), consent: true, notice: notice && !note });
+					if (!out.ok) throw new Error(out.message ?? "The blog said no.");
+					total.added += out.added ?? 0;
+					total.already += out.already ?? 0;
+					total.full += out.full ?? 0;
+					total.noticeSent += out.noticeSent ?? 0;
+					if (out.note) note = out.note;
+				}
+				bar.value = 100;
+				$("status").textContent = "Finished.";
+				$("done-summary").textContent = `${people(total.added)} added to your subscribers.`;
+				const notes: string[] = [];
+				if (total.already) notes.push(`${people(total.already)} were already on your list and were left as they are.`);
+				if (notice) notes.push(total.noticeSent ? `The "new home" email went to ${people(total.noticeSent)}.` : "The \"new home\" email wasn't sent.");
+				if (note) notes.push(`Email stopped: ${note}`);
+				$("done-notes").replaceChildren(...notes.map((t) => Object.assign(document.createElement("li"), { textContent: t })));
+				show("step-done");
+			} catch (e) {
+				$("status").className = "err";
+				$("status").textContent = `${e instanceof Error ? e.message : "Something went wrong."} Run it again to carry on: anyone already added is kept.`;
+				$<HTMLButtonElement>("go").disabled = false;
+			}
+		});
+	}
+</script>
+</body>
+</html>

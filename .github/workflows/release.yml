@@ -1,0 +1,50 @@
+# Publishes a release when a tag like v2.0.1 is pushed: builds the blog, makes the npm installer
+# (@mrpwob/blog-builder) with that release inside, publishes it to npm, and adds a GitHub release with the
+# notes from CHANGELOG.md. Needs one repository secret: NPM_TOKEN (an npm token that can publish).
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+      - run: corepack enable
+      - run: npm ci
+      - run: npm test
+      - name: Check the tag matches release.json
+        id: v
+        run: |
+          version=$(jq -r '.version' release.json)
+          if [ "v${version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "The tag ${GITHUB_REF_NAME} doesn't match the version in release.json (${version})." >&2
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          # This version's section of CHANGELOG.md, without its heading.
+          awk -v v="## ${version}:" 'index($0, v) == 1 { on = 1; sub(/^## [^:]*: /, ""); print "## " $0; next } /^## / { on = 0 } on' CHANGELOG.md > "$RUNNER_TEMP/notes.md"
+          echo "title=$(grep -m1 "^## ${version}:" CHANGELOG.md | sed 's/^## [^:]*: //')" >> "$GITHUB_OUTPUT"
+      - run: npm run build
+      - run: npm run package
+      - name: Publish to npm
+        working-directory: npm
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --title "Blog Builder ${{ steps.v.outputs.version }}: ${{ steps.v.outputs.title }}" --notes-file "$RUNNER_TEMP/notes.md"

@@ -1,0 +1,47 @@
+---
+// Journal (basic): one centred column of essays. No cards and no pictures on the home page,
+// just the date, the title and the opening lines, like the contents page of a collection.
+import { formatDate } from "../../utils/locale";
+
+const { posts, hasMore, siteTitle, siteTagline } = Astro.props;
+const href = (p: any) => `/posts/${p.id}`;
+const when = (p: any) => (p.data.publishedAt ? formatDate(p.data.publishedAt, "long") : "");
+---
+
+<header class="band jr-head">
+	<div class="frame jr-col">
+		<h1 class="jr-title">{siteTitle}</h1>
+		{siteTagline && <p class="jr-tagline">{siteTagline}</p>}
+	</div>
+</header>
+
+<section class="band jr-list" aria-label="Essays">
+	<div class="frame jr-col">
+		{posts.map((p: any) => (
+			<article class="jr-item">
+				<p class="jr-date">{when(p)}</p>
+				<h2 class="jr-item__title"><a href={href(p)}>{p.data.title}</a></h2>
+				{p.data.excerpt && <p class="jr-excerpt">{p.data.excerpt}</p>}
+				<a class="jr-read" href={href(p)}>Continue reading<span class="sr-only">: {p.data.title}</span></a>
+			</article>
+		))}
+		{hasMore && <p class="jr-all"><a class="arrow-link" href="/posts">All essays</a></p>}
+	</div>
+</section>
+
+<style>
+	.jr-col { max-width: 40rem; margin-inline: auto; }
+	.jr-head { padding-block: clamp(3.5rem, 8vw, 6rem) var(--spacing-10); text-align: center; }
+	.jr-title { margin: 0; font-family: var(--font-heading); font-size: clamp(2.6rem, 6vw, 4rem); font-weight: 600; line-height: 1.05; }
+	.jr-tagline { margin: var(--spacing-4) auto 0; max-width: 30em; font-family: var(--font-heading); font-style: italic; font-size: var(--font-size-lg); color: var(--color-text-secondary); }
+	.jr-list { padding-block: 0 var(--spacing-16); }
+	.jr-item { padding-block: var(--spacing-10); border-top: 1px solid var(--color-border); text-align: center; }
+	.jr-item:first-child { border-top: 0; padding-top: var(--spacing-6); }
+	.jr-date { margin: 0; font-size: var(--font-size-sm); letter-spacing: .08em; text-transform: uppercase; color: var(--color-muted); }
+	.jr-item__title { margin: var(--spacing-3) 0 0; font-family: var(--font-heading); font-size: clamp(1.7rem, 3.5vw, 2.3rem); font-weight: 600; line-height: 1.15; }
+	.jr-item__title a { color: inherit; text-decoration: none; }
+	.jr-item__title a:hover { color: var(--color-brand); }
+	.jr-excerpt { margin: var(--spacing-4) 0 0; font-family: var(--font-heading); font-size: 1.15rem; line-height: 1.7; color: var(--color-text-secondary); }
+	.jr-read { display: inline-block; margin-top: var(--spacing-4); font-family: var(--font-heading); font-style: italic; color: var(--color-brand); }
+	.jr-all { margin: var(--spacing-8) 0 0; text-align: center; }
+</style>

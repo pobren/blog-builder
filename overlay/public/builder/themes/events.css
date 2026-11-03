@@ -1,0 +1,76 @@
+/* Blog Builder theme: Events. A "what's on" listing (src/components/homes/Events.astro):
+   a night-time header with the next event as a poster, ticket-stub dates and loud, tight headings.
+   Every rule starts with the theme's name on <html>, so it beats the template's own styles. */
+:root[data-bb-theme="events"] {
+	--color-bg: light-dark(#fffaf5, #120b1f);
+	--color-surface: light-dark(#ffffff, #1a1129);
+	--color-fill: light-dark(#f7efe7, #1f1530);
+	--color-fill-strong: light-dark(#efe2d6, #2a1d40);
+	--color-text: light-dark(#1a1030, #f6f1ff);
+	--color-text-secondary: light-dark(#3e3354, #cfc5e3);
+	--color-muted: light-dark(#6c6180, #9c92b3);
+	--color-border: light-dark(#ece2d8, #2a1f3d);
+	--color-border-subtle: light-dark(#f3ebe3, #20172f);
+	--color-border-strong: light-dark(#dccdbf, #3a2c52);
+	--color-brand: light-dark(#e8452c, #ff6e55);
+	--color-brand-hover: light-dark(#c8341d, #ff9585);
+	--color-on-brand: light-dark(#ffffff, #1a0500);
+	--bb-night: #1a1030;
+	--bb-spark: #ffd23f;
+	--font-heading: var(--font-display), system-ui, sans-serif;
+	--font-weight-heading: 900;
+	--font-weight-display: 900;
+	--tracking-tight: -0.035em;
+	--radius-lg: 16px;
+	--radius-xl: 22px;
+}
+/* No frame rails: the page runs edge to edge. */
+:root[data-bb-theme="events"] body::before,
+:root[data-bb-theme="events"] body::after,
+:root[data-bb-theme="events"] .site-header::before,
+:root[data-bb-theme="events"] .site-header::after,
+:root[data-bb-theme="events"] .band::before,
+:root[data-bb-theme="events"] .band::after {
+	display: none;
+}
+:root[data-bb-theme="events"] .site-header__inner {
+	border-inline: 0;
+}
+/* The header joins the night-time hero below it. */
+:root[data-bb-theme="events"] .site-header {
+	background: var(--bb-night);
+	--color-text: #ffffff;
+	--color-muted: #c9bfe0;
+	--color-border: #2e2247;
+	--color-fill: #2a1d40;
+	--color-surface: #2a1d40;
+	--color-text-secondary: #d6cdeb;
+	--color-border-strong: #3a2c52;
+	color: #ffffff;
+	border-bottom-color: transparent;
+}
+:root[data-bb-theme="events"] .brand__name {
+	font-family: var(--font-heading);
+	font-weight: 900;
+	text-transform: uppercase;
+	letter-spacing: -0.02em;
+}
+:root[data-bb-theme="events"] .btn {
+	border-radius: 999px;
+	font-weight: 800;
+}
+/* Event pages: a loud title in capitals and a wide poster. */
+:root[data-bb-theme="events"] .post-header__title {
+	font-size: clamp(2.4rem, 1.5rem + 4vw, 4.4rem);
+	line-height: 0.98;
+	text-transform: uppercase;
+	letter-spacing: -0.035em;
+}
+:root[data-bb-theme="events"] .eyebrow {
+	color: var(--color-brand);
+	font-weight: 800;
+}
+:root[data-bb-theme="events"] .post-header__lead {
+	font-size: var(--font-size-lg);
+	font-weight: 600;
+}

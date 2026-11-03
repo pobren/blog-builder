@@ -1,0 +1,48 @@
+---
+// Studio (basic): a short introduction, then the work as an even grid of pictures with the
+// title underneath. For designers, makers and creative studios.
+import { Image } from "emdash/ui";
+
+const { posts, hasMore, siteTitle, siteTagline, section } = Astro.props;
+const href = (p: any) => `/posts/${p.id}`;
+const work = posts.filter((p: any) => p.data.featured_image).slice(0, 9);
+---
+
+<header class="band st-head">
+	<div class="frame st-head__grid">
+		<h1 class="st-title">{siteTitle}</h1>
+		{siteTagline && <p class="st-tagline">{siteTagline}</p>}
+	</div>
+</header>
+
+<section class="band st-work" aria-label="Work">
+	<div class="frame">
+		<div class="st-grid">
+			{work.map((p: any) => (
+				<a class="st-item" href={href(p)}>
+					<span class="st-item__media"><Image image={p.data.featured_image} sizes="(min-width: 900px) 380px, 50vw" /></span>
+					<span class="st-item__title">{p.data.title}</span>
+					{section(p) && <span class="st-item__kind">{section(p).label}</span>}
+				</a>
+			))}
+		</div>
+		{hasMore && <p class="st-all"><a class="arrow-link" href="/posts">All work</a></p>}
+	</div>
+</section>
+
+<style>
+	.st-head { padding-block: clamp(3rem, 7vw, 5rem) var(--spacing-8); }
+	.st-head__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--spacing-8); align-items: end; }
+	.st-title { margin: 0; font-family: var(--font-heading); font-size: clamp(2.4rem, 6vw, 4.2rem); font-weight: 800; line-height: 1; letter-spacing: -0.04em; }
+	.st-tagline { margin: 0; font-size: var(--font-size-lg); line-height: 1.55; color: var(--color-text-secondary); }
+	.st-work { padding-block: var(--spacing-4) var(--spacing-16); }
+	.st-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--spacing-8) var(--spacing-5); }
+	.st-item { display: grid; gap: var(--spacing-1); color: inherit; text-decoration: none; }
+	.st-item__media { display: block; overflow: hidden; border-radius: var(--radius-lg); background: var(--color-fill); margin-bottom: var(--spacing-2); }
+	.st-item__media :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; transition: transform .3s; }
+	.st-item:hover :global(img) { transform: scale(1.03); }
+	.st-item__title { font-weight: 700; font-size: 1.1rem; }
+	.st-item__kind { font-size: var(--font-size-sm); color: var(--color-muted); }
+	.st-all { margin: var(--spacing-10) 0 0; }
+	@media (max-width: 760px) { .st-head__grid { grid-template-columns: minmax(0, 1fr); } .st-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>

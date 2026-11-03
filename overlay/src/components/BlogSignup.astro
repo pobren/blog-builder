@@ -1,0 +1,28 @@
+---
+// The newsletter sign-up box (the "newsletter" plugin, src/extras/newsletter.ts).
+// `id` keeps the labels unique when a post also has a sign-up box of its own (the "Sign-up box" block, blocks.ts).
+// `button` is the words on the button (Sign-up forms). `askName` (Sign-up forms) adds a name box: "optional", "required", or "off" for none.
+const { heading, blurb, siteKey, askName = "optional", button = "Sign up", id = "bb-signup" } = Astro.props as { heading: string; blurb: string; siteKey: string; askName?: string; button?: string; id?: string };
+const withName = askName !== "off";
+---
+
+<section class="band bb-signup" aria-labelledby={`${id}-title`}>
+	<div class="frame bb-signup__inner">
+		<div>
+			<h2 id={`${id}-title`} class="bb-signup__title">{heading}</h2>
+			{blurb && <p class="bb-signup__blurb">{blurb}</p>}
+		</div>
+		<form class="bb-form bb-signup__form" data-rc-goal="Newsletter sign-up" data-bb-form="/_emdash/api/plugins/newsletter/subscribe" data-bb-done="Thanks, you're on the list.">
+			{withName && <label class="sr-only" for={`${id}-name`}>{askName === "required" ? "Your name" : "Your name (optional)"}</label>}
+			<label class="sr-only" for={`${id}-email`}>Email address</label>
+			<div class={withName ? "bb-signup__row bb-signup__row--name" : "bb-signup__row"}>
+				{withName && <input id={`${id}-name`} name="name" type="text" maxlength="80" required={askName === "required"} autocomplete="name" placeholder={askName === "required" ? "Your name" : "Your name (optional)"} />}
+				<input id={`${id}-email`} name="email" type="email" required autocomplete="email" placeholder="you@example.com" />
+				<button class="btn" type="submit">{button}</button>
+			</div>
+			<input class="bb-hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+			{siteKey && <div class="cf-turnstile" data-sitekey={siteKey} />}
+			<p class="bb-form__note" role="status" aria-live="polite"></p>
+		</form>
+	</div>
+</section>

@@ -1,0 +1,151 @@
+---
+// Events: a "what's on" listing for venues, clubs and organisers. The newest event is the big
+// poster at the top, then every other event as a poster card. Start a post's excerpt with its
+// date ("Sat 8 Nov, 7.30pm. ...") and the date is shown as a ticket stub.
+import { Image } from "emdash/ui";
+
+const { posts, hasMore, siteTitle, siteTagline, section, business, button } = Astro.props;
+const href = (p: any) => `/posts/${p.id}`;
+const WHEN = /^\s*(?:(mon|tue|wed|thu|fri|sat|sun)[a-z]*\.?,?\s+)?(\d{1,2})(?:st|nd|rd|th)?\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?(?:,\s*((?:[^.]|\.(?=\d)){1,30}))?\.\s*/i;
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+// The date at the start of an excerpt, and the rest of the excerpt without it.
+const when = (p: any) => {
+	const text = p.data.excerpt ?? "";
+	const m = text.match(WHEN);
+	if (!m) return { date: null, rest: text };
+	return { date: { day: m[1] ? cap(m[1]) : "", num: m[2], month: cap(m[3]), time: m[4]?.trim() ?? "" }, rest: text.slice(m[0].length) };
+};
+const [next, ...rest] = posts;
+const top = next ? when(next) : null;
+const tel = business?.phone ? business.phone.replace(/[^\d+]/g, "") : "";
+---
+
+<header class="ev-hero">
+	<div class="frame">
+		<p class="ev-kicker">What's on at</p>
+		<h1 class="ev-title">{siteTitle}</h1>
+		{siteTagline && <p class="ev-tagline">{siteTagline}</p>}
+	</div>
+	{next && (
+		<div class="frame">
+			<article class="ev-next">
+				{next.data.featured_image && <a class="ev-next__media" href={href(next)} tabindex="-1" aria-hidden="true"><Image image={next.data.featured_image} sizes="(min-width: 900px) 560px, 100vw" priority /></a>}
+				<div class="ev-next__body">
+					<div class="ev-next__head">
+						{top?.date && (
+							<p class="ev-stub ev-stub--big"><span>{top.date.day}</span><strong>{top.date.num}</strong><span>{top.date.month}</span></p>
+						)}
+						<p class="ev-label">Next up</p>
+					</div>
+					<h2 class="ev-next__title"><a href={href(next)}>{next.data.title}</a></h2>
+					{top?.date?.time && <p class="ev-time">{top.date.time}</p>}
+					{top?.rest && <p class="ev-next__excerpt">{top.rest}</p>}
+					<p class="ev-actions">
+						{button && <a class="btn ev-btn" href={button.link}>{button.text}</a>}
+						<a class={button ? "ev-more" : "btn ev-btn"} href={href(next)}>Find out more</a>
+					</p>
+				</div>
+			</article>
+		</div>
+	)}
+</header>
+
+{rest.length > 0 && (
+	<section class="band ev-list" aria-labelledby="ev-list">
+		<div class="frame">
+			<h2 id="ev-list" class="ev-h2">Coming up</h2>
+			<div class="ev-grid">
+				{rest.map((p: any) => {
+					const w = when(p);
+					const s = section(p);
+					return (
+						<article class="ev-card">
+							<a class="ev-card__media" href={href(p)} tabindex="-1" aria-hidden="true">
+								{p.data.featured_image ? <Image image={p.data.featured_image} sizes="(min-width: 900px) 380px, 100vw" /> : <span class="ev-card__blank" />}
+							</a>
+							{w.date && <p class="ev-stub"><span>{w.date.day}</span><strong>{w.date.num}</strong><span>{w.date.month}</span></p>}
+							<div class="ev-card__body">
+								{s && <a class="ev-chip" href={`/category/${s.slug}`}>{s.label}</a>}
+								<h3 class="ev-card__title"><a href={href(p)}>{p.data.title}</a></h3>
+								{w.date?.time && <p class="ev-time">{w.date.time}</p>}
+								{w.rest && <p class="ev-card__excerpt">{w.rest}</p>}
+							</div>
+						</article>
+					);
+				})}
+			</div>
+			{hasMore && <p class="ev-all"><a class="arrow-link" href="/posts">Every event</a></p>}
+		</div>
+	</section>
+)}
+
+{business && (business.address || business.phone || business.email || business.hours) && (
+	<section class="band ev-visit" aria-labelledby="ev-visit">
+		<div class="frame ev-visit__inner">
+			<h2 id="ev-visit" class="ev-h2">Plan your visit</h2>
+			<div class="ev-visit__grid">
+				{business.address && <div><h3>Where</h3><p class="ev-lines">{business.address}</p></div>}
+				{business.hours && <div><h3>Doors and box office</h3><p class="ev-lines">{business.hours}</p></div>}
+				{(tel || business.email) && (
+					<div>
+						<h3>Get in touch</h3>
+						<p class="ev-lines">
+							{tel && <a href={`tel:${tel}`}>{business.phone}</a>}
+							{tel && business.email && <br />}
+							{business.email && <a href={`mailto:${business.email}`}>{business.email}</a>}
+						</p>
+					</div>
+				)}
+			</div>
+		</div>
+	</section>
+)}
+
+<style>
+	.ev-hero { padding-block: clamp(3rem, 7vw, 5.5rem); background: var(--bb-night); color: #fff; overflow: hidden; position: relative; }
+	.ev-hero::before { content: ""; position: absolute; inset: -40% -10% auto auto; width: 70vw; height: 70vw; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--color-brand) 55%, transparent), transparent); opacity: .55; pointer-events: none; }
+	.ev-hero > .frame { position: relative; }
+	.ev-kicker { margin: 0; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--bb-spark); font-size: var(--font-size-sm); }
+	.ev-title { margin: var(--spacing-2) 0 0; font-family: var(--font-heading); font-size: clamp(3rem, 9vw, 6.5rem); line-height: .92; font-weight: 900; letter-spacing: -0.04em; text-transform: uppercase; }
+	.ev-tagline { margin: var(--spacing-4) 0 0; max-width: 36em; font-size: var(--font-size-lg); opacity: .85; }
+	.ev-next { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center; margin-top: clamp(2.5rem, 5vw, 4rem); }
+	.ev-next__media { display: block; border-radius: 18px; overflow: hidden; box-shadow: 0 30px 60px -30px rgb(0 0 0 / .7); transform: rotate(-1.5deg); }
+	.ev-next__media :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
+	.ev-next__head { display: flex; align-items: center; gap: var(--spacing-4); }
+	.ev-label { display: inline-block; margin: 0; padding: .3rem .8rem; border-radius: 999px; background: var(--bb-spark); color: #1a1030; font-weight: 800; font-size: var(--font-size-sm); letter-spacing: .06em; text-transform: uppercase; }
+	.ev-next__title { margin: var(--spacing-3) 0 0; font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1.02; font-weight: 900; letter-spacing: -0.03em; }
+	.ev-next__title a { color: inherit; text-decoration: none; }
+	.ev-next__excerpt { margin: var(--spacing-4) 0 0; font-size: var(--font-size-lg); line-height: 1.55; opacity: .85; }
+	.ev-time { margin: var(--spacing-2) 0 0; font-weight: 700; color: var(--bb-spark); }
+	.ev-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-4); margin: var(--spacing-6) 0 0; }
+	.ev-btn { border-radius: 999px; padding: .85rem 1.5rem; font-weight: 800; }
+	.ev-more { color: #fff; font-weight: 700; }
+	.ev-stub { display: inline-grid; justify-items: center; margin: 0; padding: .45rem .8rem .5rem; border-radius: 10px; background: #fff; color: #1a1030; line-height: 1; border: 2px dashed color-mix(in srgb, var(--color-brand) 60%, transparent); }
+	.ev-stub span { font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--color-brand); }
+	.ev-stub strong { font-family: var(--font-heading); font-size: 1.9rem; font-weight: 900; margin-block: .1rem; }
+	.ev-stub--big strong { font-size: 2.6rem; }
+	.ev-list { padding-block: var(--spacing-16); }
+	.ev-h2 { margin: 0 0 var(--spacing-8); font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 900; letter-spacing: -0.03em; text-transform: uppercase; }
+	.ev-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--spacing-8) var(--spacing-6); }
+	.ev-card { position: relative; display: flex; flex-direction: column; }
+	.ev-card__media { display: block; border-radius: 16px; overflow: hidden; background: var(--color-fill); }
+	.ev-card__media :global(img), .ev-card__blank { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; transition: transform .3s; }
+	.ev-card:hover .ev-card__media :global(img) { transform: scale(1.03); }
+	.ev-card > .ev-stub { position: absolute; top: 14px; left: 14px; box-shadow: 0 8px 20px -8px rgb(0 0 0 / .45); }
+	.ev-card__body { padding-top: var(--spacing-4); }
+	.ev-chip { display: inline-block; padding: .2rem .65rem; border-radius: 999px; background: color-mix(in srgb, var(--color-brand) 12%, transparent); color: var(--color-brand); font-size: var(--font-size-sm); font-weight: 700; text-decoration: none; }
+	.ev-card__title { margin: var(--spacing-2) 0 0; font-family: var(--font-heading); font-size: 1.45rem; line-height: 1.15; font-weight: 800; letter-spacing: -0.02em; }
+	.ev-card__title a { color: inherit; text-decoration: none; }
+	.ev-card__title a:hover { color: var(--color-brand); }
+	.ev-card .ev-time { color: var(--color-brand); }
+	.ev-card__excerpt { margin: var(--spacing-2) 0 0; color: var(--color-muted); line-height: 1.5; }
+	.ev-all { margin: var(--spacing-10) 0 0; }
+	.ev-visit { padding-block: var(--spacing-12) var(--spacing-16); }
+	.ev-visit__inner { padding: clamp(1.5rem, 4vw, 3rem); border-radius: 24px; background: var(--color-fill); }
+	.ev-visit .ev-h2 { margin-bottom: var(--spacing-6); }
+	.ev-visit__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--spacing-6); }
+	.ev-visit h3 { margin: 0 0 var(--spacing-2); font-size: var(--font-size-sm); letter-spacing: .1em; text-transform: uppercase; color: var(--color-brand); }
+	.ev-lines { margin: 0; white-space: pre-line; line-height: 1.6; font-size: 1.05rem; }
+	.ev-lines a { color: inherit; font-weight: 600; }
+	@media (max-width: 860px) { .ev-next { grid-template-columns: minmax(0, 1fr); } .ev-next__media { transform: none; } }
+</style>

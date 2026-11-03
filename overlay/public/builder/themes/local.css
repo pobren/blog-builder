@@ -1,0 +1,70 @@
+/* Blog Builder theme: Local. Bold and warm, for trades, shops, salons and cafés.
+   Every rule starts with the theme's name on <html>, so it beats the template's own styles. */
+:root[data-bb-theme="local"] {
+	--bb-sun: light-dark(#fde7c8, #3a2414);
+	--color-bg: light-dark(#fff8ef, #171009);
+	--color-surface: light-dark(#ffffff, #21170e);
+	--color-fill: light-dark(#fbeedd, #2c1f12);
+	--color-fill-strong: light-dark(#f6e0c2, #392815);
+	--color-text: light-dark(#3b1d0c, #f7eadb);
+	--color-text-secondary: light-dark(#6f4a32, #d6bea4);
+	--color-muted: light-dark(#8a6a52, #ac927a);
+	--color-border: light-dark(#f0dcc2, #3a2a1a);
+	--color-border-subtle: light-dark(#f6e8d4, #2c2014);
+	--color-border-strong: light-dark(#e6c9a3, #4c3720);
+	--color-brand: light-dark(#c2410c, #fb923c);
+	--color-brand-hover: light-dark(#9a3412, #fdba74);
+	--color-on-brand: light-dark(#ffffff, #1f0e03);
+	--font-heading: var(--font-display), system-ui, sans-serif;
+	--font-weight-heading: 800;
+	--font-weight-display: 800;
+	--tracking-tight: -0.03em;
+	--radius-lg: 18px;
+	--radius-xl: 26px;
+}
+:root[data-bb-theme="local"] .band::before,
+:root[data-bb-theme="local"] .band::after {
+	display: none;
+}
+:root[data-bb-theme="local"] .intro {
+	background: var(--bb-sun);
+	border-top: 0;
+}
+:root[data-bb-theme="local"] .intro__title {
+	font-size: clamp(2.5rem, 1.6rem + 4vw, 4.5rem);
+}
+:root[data-bb-theme="local"] .eyebrow {
+	color: var(--color-brand);
+	font-weight: 700;
+}
+/* The business details as a bright block straight under the title. */
+:root[data-bb-theme="local"] .bb-business {
+	background: var(--color-brand);
+	border-top: 0;
+	color: var(--color-on-brand);
+	--color-text: var(--color-on-brand);
+	--color-text-secondary: light-dark(#ffe9d6, #3b1a06);
+	--color-muted: light-dark(#ffe9d6, #3b1a06);
+}
+:root[data-bb-theme="local"] .bb-business .eyebrow,
+:root[data-bb-theme="local"] .bb-business .arrow-link {
+	color: inherit;
+}
+:root[data-bb-theme="local"] .bb-business__big {
+	font-size: var(--font-size-xl);
+	font-weight: 800;
+}
+:root[data-bb-theme="local"] .bb-business .btn {
+	background: var(--color-on-brand);
+	color: var(--color-brand);
+	font-size: var(--font-size-lg);
+	padding: 0.9em 1.6em;
+}
+:root[data-bb-theme="local"] .btn {
+	font-weight: 700;
+}
+:root[data-bb-theme="local"] .post--card .post__title,
+:root[data-bb-theme="local"] .section-head__title {
+	font-family: var(--font-heading);
+	font-weight: 800;
+}

@@ -1,0 +1,60 @@
+/* Blog Builder theme: Podcast. For audio shows (src/components/homes/Podcast.astro):
+   big cover art, a tangerine play button, a waveform card for the newest episode and numbered episodes.
+   Every rule starts with the theme's name on <html>, so it beats the template's own styles. */
+:root[data-bb-theme="podcast"] {
+	--color-bg: light-dark(#fffaf6, #120e0b);
+	--color-surface: light-dark(#ffffff, #1a1511);
+	--color-fill: light-dark(#f8efe7, #211a15);
+	--color-fill-strong: light-dark(#f0e2d5, #2c231c);
+	--color-text: light-dark(#1d1612, #f7efe8);
+	--color-text-secondary: light-dark(#463a31, #d3c6ba);
+	--color-muted: light-dark(#7a6b5f, #a09184);
+	--color-border: light-dark(#efe3d8, #2a221c);
+	--color-border-subtle: light-dark(#f5ece4, #1f1914);
+	--color-border-strong: light-dark(#e0cfc0, #3b3028);
+	--color-brand: light-dark(#e85d0c, #ff8a3d);
+	--color-brand-hover: light-dark(#c24a05, #ffa86b);
+	--color-on-brand: light-dark(#ffffff, #1d0c00);
+	--bb-deep: #1d1612;
+	--font-heading: var(--font-display), system-ui, sans-serif;
+	--font-weight-heading: 800;
+	--font-weight-display: 800;
+	--tracking-tight: -0.035em;
+	--radius-lg: 16px;
+	--radius-xl: 24px;
+}
+/* No frame rails: the page runs edge to edge. */
+:root[data-bb-theme="podcast"] body::before,
+:root[data-bb-theme="podcast"] body::after,
+:root[data-bb-theme="podcast"] .site-header::before,
+:root[data-bb-theme="podcast"] .site-header::after,
+:root[data-bb-theme="podcast"] .band::before,
+:root[data-bb-theme="podcast"] .band::after {
+	display: none;
+}
+:root[data-bb-theme="podcast"] .site-header__inner {
+	border-inline: 0;
+}
+:root[data-bb-theme="podcast"] .brand__name {
+	font-family: var(--font-heading);
+	font-weight: 800;
+	letter-spacing: -0.02em;
+}
+:root[data-bb-theme="podcast"] .btn {
+	border-radius: 999px;
+	font-weight: 800;
+}
+/* Episode pages: a bold title, and the audio player and show notes given room. */
+:root[data-bb-theme="podcast"] .post-header__title {
+	font-size: clamp(2.2rem, 1.5rem + 3.2vw, 3.8rem);
+	letter-spacing: -0.04em;
+	line-height: 1.02;
+}
+:root[data-bb-theme="podcast"] .eyebrow {
+	color: var(--color-brand);
+	font-weight: 800;
+}
+:root[data-bb-theme="podcast"] .prose audio {
+	width: 100%;
+	margin-block: 1.5rem;
+}

@@ -1,0 +1,35 @@
+---
+// The "Sign-up box" block (src/extras/blocks.ts): the newsletter sign-up form inside a post or page.
+import { siteKeyFor } from "../turnstile";
+import { getPluginSetting } from "emdash";
+import BlogSignup from "./BlogSignup.astro";
+import BlogForms from "./BlogForms.astro";
+
+const { node } = Astro.props as { node: { _key?: string; heading?: string; blurb?: string } };
+const text = async (key: string) => {
+	try {
+		return String((await getPluginSetting<string>("newsletter", key)) ?? "").trim();
+	} catch {
+		return "";
+	}
+};
+const heading = node.heading?.trim() || (await text("heading")) || "Get new posts by email";
+const blurb = node.blurb?.trim() || (await text("blurb")) || "Leave your email address and we'll let you know when there's something new.";
+const siteKey = siteKeyFor(await text("turnstileSiteKey"), Astro.url.hostname);
+const askName = (await text("askName")) || "optional";
+const button = (await text("buttonLabel")) || "Sign up";
+const id = `bb-signup-${(node._key ?? "block").replace(/[^A-Za-z0-9_-]/g, "")}`;
+---
+
+<div class="bb-block-signup">
+	<BlogSignup heading={heading} blurb={blurb} siteKey={siteKey} askName={askName} button={button} id={id} />
+	<BlogForms turnstile={!!siteKey} />
+</div>
+
+<style>
+	.bb-block-signup {
+		margin-block: var(--spacing-8, 32px);
+		border-radius: var(--radius-lg, 12px);
+		overflow: hidden;
+	}
+</style>

@@ -1,0 +1,78 @@
+/* Blog Builder theme: Hospitality. A full-width welcome picture, opening times and
+   booking up front (src/components/homes/Hospitality.astro), in deep green and cream.
+   Every rule starts with the theme's name on <html>, so it beats the template's own styles. */
+:root[data-bb-theme="hospitality"] {
+	--color-bg: light-dark(#fbf7ef, #121612);
+	--color-surface: light-dark(#ffffff, #1a201b);
+	--color-fill: light-dark(#f1eadc, #1f2720);
+	--color-fill-strong: light-dark(#e6dcc7, #2a342b);
+	--color-text: light-dark(#1f2a22, #eee8dc);
+	--color-text-secondary: light-dark(#46534a, #c6c0b2);
+	--color-muted: light-dark(#6f7a70, #99a198);
+	--color-border: light-dark(#e6dccb, #2b342c);
+	--color-border-subtle: light-dark(#efe7d8, #222a23);
+	--color-border-strong: light-dark(#d8cab0, #3a463b);
+	--color-brand: light-dark(#2f5d46, #8fc7a6);
+	--color-brand-hover: light-dark(#244a37, #b3dcc3);
+	--color-on-brand: light-dark(#ffffff, #0c1a12);
+	--bb-gold: light-dark(#b88a3b, #d9b26b);
+	--font-heading: var(--font-serif), Georgia, serif;
+	--font-weight-heading: 600;
+	--font-weight-display: 600;
+	--tracking-tight: -0.01em;
+	--radius-lg: 10px;
+	--radius-xl: 14px;
+}
+:root[data-bb-theme="hospitality"] .band::before,
+:root[data-bb-theme="hospitality"] .band::after {
+	display: none;
+}
+:root[data-bb-theme="hospitality"] .site-header {
+	background: var(--color-bg);
+	border-bottom: 1px solid var(--color-border);
+}
+:root[data-bb-theme="hospitality"] .brand__name {
+	font-family: var(--font-heading);
+	font-size: 1.25rem;
+	font-weight: 600;
+}
+:root[data-bb-theme="hospitality"] .btn {
+	border-radius: 999px;
+}
+:root[data-bb-theme="hospitality"] .eyebrow {
+	font-family: var(--font-heading);
+	font-style: italic;
+	text-transform: none;
+	letter-spacing: 0;
+	font-size: 1.05rem;
+	color: var(--bb-gold);
+}
+:root[data-bb-theme="hospitality"] .post-header__inner {
+	text-align: center;
+	max-width: 48rem;
+	margin-inline: auto;
+}
+:root[data-bb-theme="hospitality"] .post-header__title {
+	font-size: clamp(2.3rem, 1.6rem + 3vw, 3.8rem);
+}
+:root[data-bb-theme="hospitality"] .post-hero__media img {
+	border-radius: var(--radius-xl);
+}
+:root[data-bb-theme="hospitality"] .site-footer {
+	background: light-dark(#1f2a22, #0b0f0c);
+	--color-text: #eee8dc;
+	--color-text-secondary: #c6c0b2;
+	--color-muted: #a7aea3;
+	--color-border: #33403a;
+	color: #eee8dc;
+}
+/* No frame rails: the home page runs edge to edge. */
+:root[data-bb-theme="hospitality"] body::before,
+:root[data-bb-theme="hospitality"] body::after,
+:root[data-bb-theme="hospitality"] .site-header::before,
+:root[data-bb-theme="hospitality"] .site-header::after {
+	display: none;
+}
+:root[data-bb-theme="hospitality"] .site-header__inner {
+	border-inline: 0;
+}

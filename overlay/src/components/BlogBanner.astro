@@ -1,0 +1,73 @@
+---
+// A promo banner across the top of every page (the Blog Builder plugin's settings). Readers can close it, and it stays
+// closed for them until the owner changes its words.
+const { text, link, button } = Astro.props as { text: string; link: string; button: string };
+let key = 0;
+for (const ch of text + link) key = (key * 31 + ch.charCodeAt(0)) >>> 0;
+---
+
+<div class="bb-banner" data-bb-banner={String(key)} role="region" aria-label="Announcement">
+	<p class="bb-banner__text">
+		{text}
+		{link && <a class="bb-banner__link" href={link}>{button || "Find out more"}<span aria-hidden="true"> →</span></a>}
+	</p>
+	<button type="button" class="bb-banner__close" aria-label="Close this message">
+		<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+	</button>
+</div>
+
+<script is:inline>
+	(function () {
+		var b = document.querySelector("[data-bb-banner]");
+		if (!b) return;
+		var k = "bb-banner-" + b.getAttribute("data-bb-banner");
+		try {
+			if (localStorage.getItem(k)) b.remove();
+		} catch (e) {}
+		var x = b.querySelector(".bb-banner__close");
+		if (x) x.addEventListener("click", function () {
+			b.remove();
+			try { localStorage.setItem(k, "1"); } catch (e) {}
+		});
+	})();
+</script>
+
+<style>
+	.bb-banner {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 12px;
+		padding: 10px 16px;
+		background: var(--color-text, #1c1917);
+		color: var(--color-bg, #fff);
+		font-size: 0.95rem;
+		line-height: 1.4;
+	}
+	.bb-banner__text {
+		margin: 0;
+		text-align: center;
+	}
+	.bb-banner__link {
+		color: inherit;
+		font-weight: 600;
+		margin-left: 8px;
+		text-underline-offset: 3px;
+	}
+	.bb-banner__close {
+		flex: none;
+		display: inline-grid;
+		place-items: center;
+		width: 28px;
+		height: 28px;
+		border: 0;
+		border-radius: 999px;
+		background: transparent;
+		color: inherit;
+		cursor: pointer;
+		opacity: 0.8;
+	}
+	.bb-banner__close:hover {
+		opacity: 1;
+	}
+</style>

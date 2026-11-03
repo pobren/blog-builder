@@ -1,0 +1,105 @@
+---
+// Help centre: a big search box, every topic as a tile with its article count, the newest
+// articles, and a way to get in touch when the answer isn't there.
+
+const { posts, hasMore, siteTitle, siteTagline, topics, business, contact } = Astro.props;
+const shown = (topics as any[]).filter((t) => (t.count ?? 0) > 0);
+const popular = posts.slice(0, 10);
+const href = (p: any) => `/posts/${p.id}`;
+const ICONS = ["M4 6h16M4 12h16M4 18h10", "M12 3l8 4v6c0 4-3.5 7-8 8-4.5-1-8-4-8-8V7z", "M3 12h4l3 8 4-16 3 8h4", "M5 4h14v16H5zM9 8h6M9 12h6M9 16h3", "M12 8v4l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z", "M4 7l8 5 8-5M4 7v10h16V7"];
+---
+
+<header class="hc-hero">
+	<div class="frame hc-hero__inner">
+		<p class="hc-name">{siteTitle}</p>
+		<h1 class="hc-title">How can we help?</h1>
+		{siteTagline && <p class="hc-tagline">{siteTagline}</p>}
+		<form class="hc-search" action="/search" role="search">
+			<label class="sr-only" for="hc-q">Search the help centre</label>
+			<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
+			<input id="hc-q" name="q" type="search" placeholder="Search for an answer" autocomplete="off" />
+			<button class="btn" type="submit">Search</button>
+		</form>
+	</div>
+</header>
+
+{shown.length > 0 && (
+	<section class="band hc-topics" aria-labelledby="hc-topics">
+		<div class="frame">
+			<h2 id="hc-topics" class="hc-h2">Browse by topic</h2>
+			<div class="hc-grid">
+				{shown.map((t: any, i: number) => (
+					<a class="hc-topic" href={`/category/${t.slug}`}>
+						<span class="hc-topic__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d={ICONS[i % ICONS.length]} /></svg></span>
+						<span class="hc-topic__name">{t.label}</span>
+						<span class="hc-topic__count">{t.count} {t.count === 1 ? "article" : "articles"}</span>
+					</a>
+				))}
+			</div>
+		</div>
+	</section>
+)}
+
+{popular.length > 0 && (
+	<section class="band hc-popular" aria-labelledby="hc-popular">
+		<div class="frame">
+			<h2 id="hc-popular" class="hc-h2">Latest articles</h2>
+			<ul class="hc-list">
+				{popular.map((p: any) => (
+					<li><a href={href(p)}><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h9l4 4v14H6z M14 3v5h5" /></svg><span>{p.data.title}</span></a></li>
+				))}
+			</ul>
+			{hasMore && <p class="hc-all"><a class="arrow-link" href="/posts">Every article</a></p>}
+		</div>
+	</section>
+)}
+
+{(contact || business?.email || business?.phone) && (
+	<section class="band hc-contact" aria-labelledby="hc-contact">
+		<div class="frame hc-contact__inner">
+			<div>
+				<h2 id="hc-contact" class="hc-h2">Still need help?</h2>
+				<p>We read every message and usually reply within one working day.</p>
+			</div>
+			<p class="hc-contact__ways">
+				{contact && <a class="btn" href="/contact">Send us a message</a>}
+				{business?.email && <a href={`mailto:${business.email}`}>{business.email}</a>}
+				{business?.phone && <a href={`tel:${business.phone.replace(/[^\d+]/g, "")}`}>{business.phone}</a>}
+			</p>
+		</div>
+	</section>
+)}
+
+<style>
+	.hc-hero { padding-block: clamp(3.5rem, 8vw, 6rem); background: radial-gradient(120% 140% at 50% 0%, color-mix(in srgb, var(--color-brand) 92%, #fff) 0%, var(--color-brand) 55%, color-mix(in srgb, var(--color-brand) 70%, #000) 100%); color: #fff; text-align: center; }
+	.hc-hero__inner { display: flex; flex-direction: column; align-items: center; }
+	.hc-name { margin: 0; font-weight: 700; opacity: .85; }
+	.hc-title { margin: var(--spacing-2) 0 0; font-family: var(--font-heading); font-size: clamp(2.4rem, 6vw, 4rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
+	.hc-tagline { margin: var(--spacing-3) 0 0; max-width: 34em; font-size: var(--font-size-lg); opacity: .9; }
+	.hc-search { display: flex; align-items: center; gap: var(--spacing-2); width: min(100%, 44rem); margin-top: var(--spacing-8); padding: 8px 8px 8px 20px; border-radius: 16px; background: #fff; color: #1f2937; box-shadow: 0 20px 50px -20px rgb(0 0 0 / .45); }
+	.hc-search svg { width: 22px; height: 22px; flex: none; color: #6b7280; }
+	.hc-search input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font: inherit; font-size: 1.15rem; padding: .7rem .4rem; color: inherit; }
+	.hc-search .btn { border-radius: 10px; padding: .8rem 1.4rem; }
+	.hc-h2 { margin: 0 0 var(--spacing-6); font-family: var(--font-heading); font-size: clamp(1.6rem, 3vw, 2.1rem); font-weight: 800; letter-spacing: -0.02em; }
+	.hc-topics { padding-block: var(--spacing-12) var(--spacing-8); }
+	.hc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--spacing-4); }
+	.hc-topic { display: grid; gap: var(--spacing-1); padding: var(--spacing-6); border: 1px solid var(--color-border); border-radius: 16px; background: var(--color-surface); color: inherit; text-decoration: none; transition: border-color .15s, box-shadow .15s, transform .15s; }
+	.hc-topic:hover { border-color: var(--color-brand); box-shadow: 0 14px 30px -20px var(--color-brand); transform: translateY(-2px); }
+	.hc-topic__icon { display: grid; place-items: center; width: 48px; height: 48px; margin-bottom: var(--spacing-3); border-radius: 12px; background: color-mix(in srgb, var(--color-brand) 12%, transparent); color: var(--color-brand); }
+	.hc-topic__icon svg { width: 24px; height: 24px; }
+	.hc-topic__name { font-size: 1.2rem; font-weight: 700; }
+	.hc-topic__count { color: var(--color-muted); font-size: var(--font-size-sm); }
+	.hc-popular { padding-block: var(--spacing-8) var(--spacing-12); }
+	.hc-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--spacing-8); }
+	.hc-list a { display: flex; gap: var(--spacing-3); align-items: center; padding: var(--spacing-4) 0; border-bottom: 1px solid var(--color-border); color: inherit; font-size: 1.08rem; font-weight: 500; text-decoration: none; }
+	.hc-list a:hover { color: var(--color-brand); }
+	.hc-list svg { width: 20px; height: 20px; flex: none; color: var(--color-brand); }
+	.hc-all { margin: var(--spacing-6) 0 0; }
+	.hc-contact { padding-block: var(--spacing-12); }
+	.hc-contact__inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--spacing-6); padding: var(--spacing-8); border-radius: 20px; background: var(--color-fill); }
+	.hc-contact .hc-h2 { margin-bottom: var(--spacing-2); }
+	.hc-contact p { margin: 0; color: var(--color-text-secondary); }
+	.hc-contact__ways { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-3) var(--spacing-6); }
+	.hc-contact__ways a:not(.btn) { color: var(--color-text); font-weight: 600; }
+	@media (max-width: 720px) { .hc-list { grid-template-columns: minmax(0, 1fr); } }
+</style>

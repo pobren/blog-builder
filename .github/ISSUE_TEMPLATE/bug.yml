@@ -1,0 +1,28 @@
+name: Report a bug
+description: Something in Blog Builder isn't working as it should.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead. Screenshots help.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Blog Builder version
+      description: Shown on the Blog Builder page in your blog's admin, such as "Blog Builder 2.0.0".
+  - type: dropdown
+    id: install
+    attributes:
+      label: How did you install it?
+      options:
+        - The installer (npx @mrpwob/blog-builder)
+        - From the code (npm run setup)
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and device
+      placeholder: Chrome on Windows, Safari on iPhone…

@@ -1,0 +1,102 @@
+/* Blog Builder theme: Journal. Serif type on warm paper, one column made for long reads.
+   Every rule starts with the theme's name on <html>, so it beats the template's own styles. */
+:root[data-bb-theme="journal"] {
+	--color-bg: light-dark(#fbf8f2, #15130f);
+	--color-surface: light-dark(#fffdf9, #1c1915);
+	--color-fill: light-dark(#f3ede2, #26221c);
+	--color-fill-strong: light-dark(#e9e0d0, #312b23);
+	--color-text: light-dark(#2a211a, #ede6da);
+	--color-text-secondary: light-dark(#5c4d40, #bfb3a3);
+	--color-muted: light-dark(#7a6a5a, #9d907f);
+	--color-border: light-dark(#e6dccc, #2f2a23);
+	--color-border-subtle: light-dark(#efe7da, #25211b);
+	--color-border-strong: light-dark(#d6c8b2, #3d362d);
+	--color-brand: light-dark(#8a3412, #f0a37a);
+	--color-brand-hover: light-dark(#6e2a0f, #f6bf9f);
+	--color-on-brand: light-dark(#ffffff, #1a120c);
+	--font-body: var(--font-serif), Georgia, serif;
+	--font-heading: var(--font-serif), Georgia, serif;
+	--font-weight-heading: 600;
+	--font-weight-display: 600;
+	--tracking-tight: -0.015em;
+	--tracking-snug: -0.01em;
+	--font-size-base: 1.125rem;
+	--leading-relaxed: 1.8;
+	--radius-lg: 4px;
+	--radius-xl: 6px;
+	--shadow-card: none;
+	--shadow-card-hover: none;
+}
+:root[data-bb-theme="journal"] body {
+	font-size: 1.0625rem;
+}
+:root[data-bb-theme="journal"] .band::before,
+:root[data-bb-theme="journal"] .band::after {
+	display: none;
+}
+:root[data-bb-theme="journal"] .intro__title {
+	font-style: italic;
+}
+/* One column of posts, each a row of text with a small picture. */
+:root[data-bb-theme="journal"] .post-grid {
+	grid-template-columns: minmax(0, 1fr);
+	max-width: 46rem;
+	gap: 0;
+}
+:root[data-bb-theme="journal"] .post--card {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 9rem;
+	gap: var(--spacing-6);
+	align-items: start;
+	padding-block: var(--spacing-6);
+	border-top: 1px solid var(--color-border);
+	box-shadow: none;
+	background: transparent;
+}
+:root[data-bb-theme="journal"] .post--card .post__media {
+	order: 2;
+	aspect-ratio: 1;
+	border-radius: var(--radius-lg);
+	overflow: hidden;
+}
+:root[data-bb-theme="journal"] .post--card .post__body {
+	padding: 0;
+}
+:root[data-bb-theme="journal"] .post--card .post__title {
+	font-size: var(--font-size-2xl);
+}
+:root[data-bb-theme="journal"] .post--card .post__placeholder {
+	display: none;
+}
+:root[data-bb-theme="journal"] .post--feature {
+	box-shadow: none;
+	background: transparent;
+}
+:root[data-bb-theme="journal"] .post--feature .post__title {
+	font-size: var(--font-size-4xl);
+	font-style: italic;
+}
+:root[data-bb-theme="journal"] .prose {
+	font-size: 1.1875rem;
+}
+:root[data-bb-theme="journal"] .prose p:first-of-type::first-letter {
+	float: left;
+	font-size: 3.4em;
+	line-height: 0.9;
+	padding: 0.06em 0.1em 0 0;
+	color: var(--color-brand);
+	font-weight: 600;
+}
+:root[data-bb-theme="journal"] .chip {
+	background: transparent;
+	border: 1px solid var(--color-border-strong);
+}
+@media (max-width: 640px) {
+	:root[data-bb-theme="journal"] .post--card {
+		grid-template-columns: minmax(0, 1fr) 5.5rem;
+		gap: var(--spacing-4);
+	}
+	:root[data-bb-theme="journal"] .post--card .post__title {
+		font-size: var(--font-size-xl);
+	}
+}

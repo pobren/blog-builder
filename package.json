@@ -1,0 +1,33 @@
+{
+	"name": "blog-builder",
+	"version": "2.0.0",
+	"private": true,
+	"description": "A free, open-source blog that runs on your own Cloudflare account, built on EmDash.",
+	"license": "MIT",
+	"type": "module",
+	"homepage": "https://paulobrien.dev/blog/",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/pobren/blog-builder.git"
+	},
+	"bugs": {
+		"url": "https://github.com/pobren/blog-builder/issues"
+	},
+	"scripts": {
+		"build": "node scripts/build.mjs",
+		"package": "node --experimental-strip-types installer/package.ts",
+		"setup": "node npm/cli.mjs setup",
+		"update": "node npm/cli.mjs update",
+		"test": "node --experimental-strip-types --test test/*.test.ts installer/test/*.test.ts",
+		"typecheck": "tsc -p installer"
+	},
+	"engines": {
+		"node": ">=22"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^5.20261019.1",
+		"@types/node": "^20.19.37",
+		"esbuild": "^0.25.0",
+		"typescript": "^5.8.3"
+	}
+}

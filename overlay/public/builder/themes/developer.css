@@ -1,0 +1,80 @@
+/* Blog Builder theme: Developer. For people who write code
+   (src/components/homes/Developer.astro): monospace details, a green accent and roomy code blocks.
+   Every rule starts with the theme's name on <html>, so it beats the template's own styles. */
+:root[data-bb-theme="developer"] {
+	--color-bg: light-dark(#fcfcfb, #0d1117);
+	--color-surface: light-dark(#ffffff, #121820);
+	--color-fill: light-dark(#f3f4f1, #161c25);
+	--color-fill-strong: light-dark(#e7e9e3, #1e2631);
+	--color-text: light-dark(#14181d, #e6edf3);
+	--color-text-secondary: light-dark(#3a414b, #b6c0cc);
+	--color-muted: light-dark(#66707c, #8590a0);
+	--color-border: light-dark(#e4e6e1, #222a35);
+	--color-border-subtle: light-dark(#eef0ec, #191f28);
+	--color-border-strong: light-dark(#d2d6cd, #303a47);
+	--color-brand: light-dark(#13804a, #3fdc85);
+	--color-brand-hover: light-dark(#0e6239, #77eaa9);
+	--color-on-brand: light-dark(#ffffff, #04170c);
+	--font-weight-heading: 800;
+	--font-weight-display: 800;
+	--tracking-tight: -0.03em;
+	--radius-lg: 12px;
+	--radius-xl: 16px;
+}
+/* No frame rails: the page runs edge to edge. */
+:root[data-bb-theme="developer"] body::before,
+:root[data-bb-theme="developer"] body::after,
+:root[data-bb-theme="developer"] .site-header::before,
+:root[data-bb-theme="developer"] .site-header::after,
+:root[data-bb-theme="developer"] .band::before,
+:root[data-bb-theme="developer"] .band::after {
+	display: none;
+}
+:root[data-bb-theme="developer"] .site-header__inner {
+	border-inline: 0;
+}
+:root[data-bb-theme="developer"] .brand__name {
+	font-family: var(--font-mono);
+	font-weight: 600;
+	letter-spacing: -0.02em;
+}
+:root[data-bb-theme="developer"] .site-header .site-nav a {
+	font-family: var(--font-mono);
+	font-size: 0.9rem;
+}
+:root[data-bb-theme="developer"] .btn {
+	border-radius: 8px;
+	font-family: var(--font-mono);
+	font-weight: 600;
+}
+/* Post pages: monospace details and code blocks with room to breathe. */
+:root[data-bb-theme="developer"] .eyebrow,
+:root[data-bb-theme="developer"] .post-meta,
+:root[data-bb-theme="developer"] time {
+	font-family: var(--font-mono);
+}
+:root[data-bb-theme="developer"] .eyebrow {
+	color: var(--color-brand);
+	letter-spacing: 0;
+	text-transform: none;
+}
+:root[data-bb-theme="developer"] .post-header__title {
+	font-size: clamp(2.2rem, 1.5rem + 3vw, 3.6rem);
+	letter-spacing: -0.04em;
+	line-height: 1.04;
+}
+:root[data-bb-theme="developer"] .prose a {
+	color: var(--color-brand);
+}
+:root[data-bb-theme="developer"] .prose :not(pre) > code {
+	background: var(--color-fill);
+	border: 1px solid var(--color-border);
+	border-radius: 6px;
+	padding: 0.1em 0.35em;
+	font-size: 0.9em;
+}
+:root[data-bb-theme="developer"] .prose pre {
+	border-radius: 12px;
+	border: 1px solid var(--color-border-strong);
+	padding: 1.25rem 1.4rem;
+}

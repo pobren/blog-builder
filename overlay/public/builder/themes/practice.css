@@ -1,0 +1,75 @@
+/* Blog Builder theme: Practice. Calm navy with gold, for advisers and professional firms.
+   Every rule starts with the theme's name on <html>, so it beats the template's own styles. */
+:root[data-bb-theme="practice"] {
+	--bb-navy: #13294b;
+	--bb-gold: light-dark(#a87b1f, #e2b553);
+	--color-bg: light-dark(#f6f7f9, #0c1424);
+	--color-surface: light-dark(#ffffff, #121c30);
+	--color-fill: light-dark(#eef1f5, #1a2640);
+	--color-fill-strong: light-dark(#e1e6ee, #22304d);
+	--color-text: light-dark(#14213a, #e8edf5);
+	--color-text-secondary: light-dark(#475569, #b3bfd1);
+	--color-muted: light-dark(#64748b, #8e9bb0);
+	--color-border: light-dark(#dde3eb, #22304a);
+	--color-border-subtle: light-dark(#e9edf2, #1b2740);
+	--color-border-strong: light-dark(#c8d1dd, #2f3f5e);
+	--color-brand: light-dark(#13294b, #e2b553);
+	--color-brand-hover: light-dark(#1f3b68, #f0c96f);
+	--color-on-brand: light-dark(#ffffff, #0c1424);
+	--font-heading: var(--font-serif), Georgia, serif;
+	--font-weight-heading: 600;
+	--font-weight-display: 600;
+	--tracking-tight: -0.02em;
+	--radius-lg: 4px;
+	--radius-xl: 6px;
+	--radius-full: 4px;
+}
+/* A navy header band. */
+:root[data-bb-theme="practice"] .site-header {
+	background: var(--bb-navy);
+	--color-text: #ffffff;
+	--color-text-secondary: #c9d3e3;
+	--color-muted: #a9b6cb;
+	--color-fill: rgb(255 255 255 / 0.1);
+	--color-border: rgb(255 255 255 / 0.18);
+	--color-surface: rgb(255 255 255 / 0.08);
+	color: #ffffff;
+}
+:root[data-bb-theme="practice"] .site-header .brand__mark {
+	background: var(--bb-gold);
+	color: var(--bb-navy);
+}
+:root[data-bb-theme="practice"] .intro {
+	border-bottom: 3px solid var(--bb-gold);
+}
+:root[data-bb-theme="practice"] .eyebrow {
+	color: var(--bb-gold);
+}
+:root[data-bb-theme="practice"] .bb-business {
+	background: var(--color-surface);
+	border-top: 0;
+}
+:root[data-bb-theme="practice"] .bb-business__big {
+	color: var(--color-brand);
+}
+:root[data-bb-theme="practice"] .post--card {
+	border-top: 3px solid var(--bb-gold);
+	border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+}
+:root[data-bb-theme="practice"] .post--card .post__media {
+	display: none;
+}
+:root[data-bb-theme="practice"] .post--card .post__body {
+	padding: var(--spacing-6);
+}
+:root[data-bb-theme="practice"] .post--card .post__title {
+	font-size: var(--font-size-xl);
+}
+:root[data-bb-theme="practice"] .btn {
+	background: var(--color-brand);
+	color: var(--color-on-brand);
+}
+:root[data-bb-theme="practice"] .intro__subtitle {
+	font-family: var(--font-heading);
+	font-weight: 400;
+}

@@ -1,0 +1,60 @@
+---
+// The business details strip on the home page, for themes made for businesses (Practice, Local).
+// The owner fills the details in in the Blog Builder plugin's settings; nothing shows until they do.
+import type { BusinessDetails } from "../theme";
+
+const { details, contact } = Astro.props as { details: BusinessDetails; contact: boolean };
+const tel = details.phone.replace(/[^\d+]/g, "");
+const directions = details.address
+	? `https://www.openstreetmap.org/search?query=${encodeURIComponent(details.address.replace(/\s*\n\s*/g, ", "))}`
+	: null;
+---
+
+<section class="band bb-business" aria-label="Contact details">
+	<div class="frame bb-business__inner">
+		{
+			details.phone && (
+				<div class="bb-business__item">
+					<p class="eyebrow">Call us</p>
+					<a href={`tel:${tel}`} class="bb-business__big">{details.phone}</a>
+				</div>
+			)
+		}
+		{
+			details.email && (
+				<div class="bb-business__item">
+					<p class="eyebrow">Email us</p>
+					<a href={`mailto:${details.email}`} class="bb-business__big">{details.email}</a>
+				</div>
+			)
+		}
+		{
+			details.address && (
+				<div class="bb-business__item">
+					<p class="eyebrow">Find us</p>
+					<p class="bb-business__lines">{details.address}</p>
+					{directions && (
+						<a href={directions} class="arrow-link" rel="noopener">
+							Get directions
+						</a>
+					)}
+				</div>
+			)
+		}
+		{
+			details.hours && (
+				<div class="bb-business__item">
+					<p class="eyebrow">Opening hours</p>
+					<p class="bb-business__lines">{details.hours}</p>
+				</div>
+			)
+		}
+		{
+			contact && (
+				<div class="bb-business__item bb-business__action">
+					<a href="/contact" class="btn">Get in touch</a>
+				</div>
+			)
+		}
+	</div>
+</section>

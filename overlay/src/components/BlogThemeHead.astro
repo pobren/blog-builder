@@ -1,0 +1,11 @@
+---
+// The chosen theme's extra web font and stylesheet (src/theme.ts). Notebook has neither.
+import { Font } from "astro:assets";
+import type { ThemeInfo } from "../theme";
+
+const { info } = Astro.props as { info: ThemeInfo };
+---
+
+{info.theme.font === "serif" && <Font cssVariable="--font-serif" />}
+{info.theme.font === "display" && <Font cssVariable="--font-display" />}
+{info.stylesheet && <link rel="stylesheet" href={info.stylesheet} />}

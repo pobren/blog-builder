@@ -1,0 +1,74 @@
+---
+// The contact page (the "contact" plugin, src/extras/contact.ts). Not
+// found until the owner switches the form on.
+import { siteKeyFor } from "../turnstile";
+import { getPluginSetting } from "emdash";
+import Base from "../layouts/Base.astro";
+import BlogForms from "../components/BlogForms.astro";
+import { readFields } from "../extras/contact-fields";
+
+const setting = async <T,>(key: string, fallback: T): Promise<T> => {
+	try {
+		return ((await getPluginSetting<T>("contact", key)) ?? fallback) as T;
+	} catch {
+		return fallback;
+	}
+};
+if (!(await setting("enabled", false))) return Astro.rewrite("/404");
+const heading = (await setting("heading", "")).trim() || "Get in touch";
+const intro = (await setting("intro", "")).trim() || "Send us a message and we'll reply by email.";
+const siteKey = siteKeyFor(await setting("turnstileSiteKey", ""), Astro.url.hostname);
+const button = (await setting("button", "")).trim() || "Send message";
+const thanks = (await setting("thanks", "")).trim() || "Thanks, your message has been sent.";
+// The owner's own questions, between the email address and the message (src/extras/contact-fields.ts).
+const fields = readFields(await setting<unknown>("fields", []));
+---
+
+<Base title={heading} description={intro}>
+	<header class="band intro">
+		<div class="frame">
+			<p class="eyebrow">Contact</p>
+			<h1 class="intro__title">{heading}</h1>
+			<p class="intro__lead">{intro}</p>
+		</div>
+	</header>
+	<section class="band section">
+		<div class="frame">
+			<form class="bb-form bb-contact" data-rc-goal="Contact form" data-bb-form="/_emdash/api/plugins/contact/send" data-bb-done={thanks}>
+				<p>
+					<label for="bb-contact-name">Your name</label>
+					<input id="bb-contact-name" name="name" required autocomplete="name" maxlength="120" />
+				</p>
+				<p>
+					<label for="bb-contact-email">Your email address</label>
+					<input id="bb-contact-email" name="email" type="email" required autocomplete="email" />
+				</p>
+				{fields.map((f) => {
+					const id = `bb-contact-${f.id}`;
+					const label = `${f.label}${f.required ? "" : " (optional)"}`;
+					if (f.type === "tick") return <p class="bb-form__tick"><label><input type="checkbox" name={`q_${f.id}`} required={f.required} /> {f.label}</label></p>;
+					if (f.type === "choice") return (
+						<p>
+							<label for={id}>{label}</label>
+							<select id={id} name={`q_${f.id}`} required={f.required}>
+								<option value="">Choose…</option>
+								{f.options.map((o) => <option value={o}>{o}</option>)}
+							</select>
+						</p>
+					);
+					if (f.type === "long") return <p><label for={id}>{label}</label><textarea id={id} name={`q_${f.id}`} rows="4" maxlength="5000" required={f.required}></textarea></p>;
+					return <p><label for={id}>{label}</label><input id={id} name={`q_${f.id}`} type={f.type === "phone" ? "tel" : "text"} autocomplete={f.type === "phone" ? "tel" : "off"} maxlength="300" required={f.required} /></p>;
+				})}
+				<p>
+					<label for="bb-contact-message">Message</label>
+					<textarea id="bb-contact-message" name="message" required rows="7" maxlength="5000"></textarea>
+				</p>
+				<input class="bb-hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+				{siteKey && <div class="cf-turnstile" data-sitekey={siteKey} />}
+				<p><button class="btn" type="submit">{button}</button></p>
+				<p class="bb-form__note" role="status" aria-live="polite"></p>
+			</form>
+		</div>
+	</section>
+	<BlogForms turnstile={!!siteKey} />
+</Base>

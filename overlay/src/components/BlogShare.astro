@@ -1,0 +1,47 @@
+---
+// Share buttons under a post (the "share" plugin). Ordinary links: nothing from
+// these sites loads until a reader presses one.
+// The writer's X and Bluesky handles (the share plugin's settings) are credited in those shares.
+const { url, title, x, bluesky } = Astro.props as { url: string; title: string; x?: string | null; bluesky?: string | null };
+const u = encodeURIComponent(url);
+const t = encodeURIComponent(title);
+const via = x ? `&via=${encodeURIComponent(x)}` : "";
+const bsky = encodeURIComponent(bluesky ? ` via @${bluesky}` : "");
+const links = [
+	{ label: "LinkedIn", href: `https://www.linkedin.com/sharing/share-offsite/?url=${u}` },
+	{ label: "Facebook", href: `https://www.facebook.com/sharer/sharer.php?u=${u}` },
+	{ label: "X", href: `https://x.com/intent/post?url=${u}&text=${t}${via}` },
+	{ label: "Bluesky", href: `https://bsky.app/intent/compose?text=${t}%20${u}${bsky}` },
+	{ label: "WhatsApp", href: `https://wa.me/?text=${t}%20${u}` },
+	{ label: "Email", href: `mailto:?subject=${t}&body=${u}` },
+];
+---
+
+<section class="band bb-share" aria-labelledby="bb-share-title">
+	<div class="frame bb-share__inner">
+		<h2 id="bb-share-title" class="eyebrow">Share this post</h2>
+		<ul class="bb-share__list">
+			{
+				links.map((l) => (
+					<li>
+						<a class="chip bb-share__link" href={l.href} target="_blank" rel="noopener noreferrer">
+							{l.label}
+						</a>
+					</li>
+				))
+			}
+			<li>
+				<button type="button" class="chip bb-share__link" data-bb-copy={url}>Copy link</button>
+			</li>
+		</ul>
+	</div>
+</section>
+
+<script is:inline>
+	document.querySelectorAll("[data-bb-copy]").forEach(function (b) {
+		b.addEventListener("click", function () {
+			var done = function () { b.textContent = "Link copied"; setTimeout(function () { b.textContent = "Copy link"; }, 2000); };
+			if (navigator.clipboard) navigator.clipboard.writeText(b.getAttribute("data-bb-copy")).then(done, function () {});
+		});
+	});
+</script>

@@ -1,0 +1,61 @@
+/* Blog Builder theme: Help centre. Product help and how-to guides
+   (src/components/homes/Help.astro): a big search box, topic tiles and clear, calm article pages.
+   Every rule starts with the theme's name on <html>, so it beats the template's own styles. */
+:root[data-bb-theme="help"] {
+	--color-bg: light-dark(#ffffff, #0d1420);
+	--color-surface: light-dark(#ffffff, #121b2a);
+	--color-fill: light-dark(#f2f6fc, #162133);
+	--color-fill-strong: light-dark(#e3ecf8, #1d2b42);
+	--color-text: light-dark(#0f1b2d, #eef3fb);
+	--color-text-secondary: light-dark(#34445c, #c2cde0);
+	--color-muted: light-dark(#5f6f86, #8e9bb2);
+	--color-border: light-dark(#e3e9f2, #1f2b3e);
+	--color-border-subtle: light-dark(#edf1f7, #182234);
+	--color-border-strong: light-dark(#cfd9e7, #2c3a52);
+	--color-brand: light-dark(#1d5fd8, #6aa0ff);
+	--color-brand-hover: light-dark(#164bb0, #94bbff);
+	--color-on-brand: light-dark(#ffffff, #071226);
+	--font-weight-heading: 800;
+	--font-weight-display: 800;
+	--tracking-tight: -0.025em;
+	--radius-lg: 14px;
+	--radius-xl: 20px;
+}
+/* No frame rails: the blue search band runs edge to edge. */
+:root[data-bb-theme="help"] body::before,
+:root[data-bb-theme="help"] body::after,
+:root[data-bb-theme="help"] .site-header::before,
+:root[data-bb-theme="help"] .site-header::after,
+:root[data-bb-theme="help"] .band::before,
+:root[data-bb-theme="help"] .band::after {
+	display: none;
+}
+:root[data-bb-theme="help"] .site-header__inner {
+	border-inline: 0;
+}
+:root[data-bb-theme="help"] .brand__name {
+	font-weight: 800;
+	letter-spacing: -0.02em;
+}
+:root[data-bb-theme="help"] .btn {
+	border-radius: 10px;
+	font-weight: 700;
+}
+/* Article pages: a plain, readable column with clear headings and a tinted lead. */
+:root[data-bb-theme="help"] .post-header__title {
+	font-size: clamp(2rem, 1.4rem + 2.6vw, 3.2rem);
+	line-height: 1.08;
+}
+:root[data-bb-theme="help"] .eyebrow {
+	color: var(--color-brand);
+	font-weight: 700;
+}
+:root[data-bb-theme="help"] .prose h2,
+:root[data-bb-theme="help"] .prose h3 {
+	scroll-margin-top: 5rem;
+}
+:root[data-bb-theme="help"] .prose code {
+	background: var(--color-fill);
+	border-radius: 6px;
+	padding: 0.1em 0.35em;
+}

@@ -1,0 +1,69 @@
+/* Blog Builder theme: Gallery. For photographers (src/components/homes/Gallery.astro):
+   a quiet wall of pictures in columns, near-black at night and gallery white by day, with spaced capitals.
+   Every rule starts with the theme's name on <html>, so it beats the template's own styles. */
+:root[data-bb-theme="gallery"] {
+	--color-bg: light-dark(#f7f7f5, #0b0b0b);
+	--color-surface: light-dark(#ffffff, #121212);
+	--color-fill: light-dark(#ecebe8, #181818);
+	--color-fill-strong: light-dark(#e0dfdb, #222222);
+	--color-text: light-dark(#141414, #f0efec);
+	--color-text-secondary: light-dark(#3c3c3a, #c4c2bd);
+	--color-muted: light-dark(#75736e, #8c8a85);
+	--color-border: light-dark(#e3e2de, #222222);
+	--color-border-subtle: light-dark(#ecebe8, #1a1a1a);
+	--color-border-strong: light-dark(#cfcdc8, #333333);
+	--color-brand: light-dark(#141414, #f0efec);
+	--color-brand-hover: light-dark(#000000, #ffffff);
+	--color-on-brand: light-dark(#ffffff, #0b0b0b);
+	--font-heading: var(--font-display), system-ui, sans-serif;
+	--font-weight-heading: 500;
+	--font-weight-display: 500;
+	--radius: 0;
+	--radius-sm: 0;
+	--radius-lg: 0;
+	--radius-xl: 0;
+	--shadow-card: none;
+	--shadow-card-hover: none;
+}
+/* No frame rails: the page runs edge to edge. */
+:root[data-bb-theme="gallery"] body::before,
+:root[data-bb-theme="gallery"] body::after,
+:root[data-bb-theme="gallery"] .site-header::before,
+:root[data-bb-theme="gallery"] .site-header::after,
+:root[data-bb-theme="gallery"] .band::before,
+:root[data-bb-theme="gallery"] .band::after {
+	display: none;
+}
+:root[data-bb-theme="gallery"] .site-header__inner {
+	border-inline: 0;
+}
+:root[data-bb-theme="gallery"] .site-header {
+	border-bottom-color: transparent;
+}
+:root[data-bb-theme="gallery"] .brand__name {
+	font-family: var(--font-heading);
+	font-weight: 500;
+	letter-spacing: 0.24em;
+	text-transform: uppercase;
+	font-size: 0.9rem;
+}
+:root[data-bb-theme="gallery"] .site-header .site-nav a {
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	font-size: 0.78rem;
+}
+/* Picture pages: the picture as large as the screen allows, the words kept quiet. */
+:root[data-bb-theme="gallery"] .post-header__inner {
+	text-align: center;
+	max-width: 46rem;
+	margin-inline: auto;
+}
+:root[data-bb-theme="gallery"] .post-header__title {
+	font-size: clamp(1.8rem, 1.3rem + 2vw, 2.8rem);
+	font-weight: 500;
+	letter-spacing: 0.02em;
+}
+:root[data-bb-theme="gallery"] .eyebrow {
+	letter-spacing: 0.24em;
+	color: var(--color-muted);
+}

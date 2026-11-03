@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a question
+    url: https://github.com/pobren/blog-builder/discussions
+    about: Questions about installing or using Blog Builder go in Discussions, so everyone can find the answer.

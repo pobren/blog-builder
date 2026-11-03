@@ -1,0 +1,78 @@
+/* Blog Builder theme: Letter. A personal newsletter (src/components/homes/Letter.astro):
+   warm paper, serif type, one narrow column and a sign-up box at the top.
+   Every rule starts with the theme's name on <html>, so it beats the template's own styles. */
+:root[data-bb-theme="letter"] {
+	--color-bg: light-dark(#fbf7f0, #17140f);
+	--color-surface: light-dark(#fffdf8, #1e1a14);
+	--color-fill: light-dark(#f3ece0, #25201a);
+	--color-fill-strong: light-dark(#e9dfcf, #302920);
+	--color-text: light-dark(#2a2118, #f1e9dc);
+	--color-text-secondary: light-dark(#4f4336, #cfc3b2);
+	--color-muted: light-dark(#7d6f5e, #a39684);
+	--color-border: light-dark(#e6dccb, #2f2820);
+	--color-border-subtle: light-dark(#efe7da, #262019);
+	--color-border-strong: light-dark(#d6c8b2, #40372b);
+	--color-brand: light-dark(#a8442a, #f09a7b);
+	--color-brand-hover: light-dark(#86331d, #f6b8a0);
+	--color-on-brand: light-dark(#ffffff, #2a0f05);
+	--font-heading: var(--font-serif), Georgia, serif;
+	--font-weight-heading: 600;
+	--font-weight-display: 600;
+	--tracking-tight: -0.01em;
+	--radius-lg: 10px;
+	--radius-xl: 14px;
+}
+/* No frame rails: the page reads like a sheet of paper. */
+:root[data-bb-theme="letter"] body::before,
+:root[data-bb-theme="letter"] body::after,
+:root[data-bb-theme="letter"] .site-header::before,
+:root[data-bb-theme="letter"] .site-header::after,
+:root[data-bb-theme="letter"] .band::before,
+:root[data-bb-theme="letter"] .band::after {
+	display: none;
+}
+:root[data-bb-theme="letter"] .site-header__inner {
+	border-inline: 0;
+}
+:root[data-bb-theme="letter"] .brand__name {
+	font-family: var(--font-heading);
+	font-style: italic;
+	font-weight: 600;
+}
+:root[data-bb-theme="letter"] .btn {
+	border-radius: 999px;
+}
+/* The home page has its own sign-up box at the top, so the one at the bottom goes. */
+:root[data-bb-theme="letter"] main:has(.lt-hero) > .bb-signup {
+	display: none;
+}
+/* Letter pages: a narrow, centred column with generous serif type. */
+:root[data-bb-theme="letter"] .post-header__inner {
+	text-align: center;
+	max-width: 44rem;
+	margin-inline: auto;
+}
+:root[data-bb-theme="letter"] .post-header__title {
+	font-size: clamp(2.2rem, 1.5rem + 3vw, 3.6rem);
+	line-height: 1.08;
+}
+:root[data-bb-theme="letter"] .post-header__lead {
+	font-family: var(--font-heading);
+	font-style: italic;
+	color: var(--color-text-secondary);
+}
+:root[data-bb-theme="letter"] .prose {
+	max-width: 38rem;
+	margin-inline: auto;
+	font-family: var(--font-heading);
+	font-size: 1.2rem;
+	line-height: 1.75;
+}
+:root[data-bb-theme="letter"] .prose > p:first-of-type::first-letter {
+	float: left;
+	font-size: 3.6em;
+	line-height: 0.85;
+	padding: 0.05em 0.08em 0 0;
+	color: var(--color-brand);
+	font-weight: 600;
+}

@@ -1,0 +1,91 @@
+---
+// Gallery: for photographers. A dark wall of pictures in columns, edge to edge, with the name kept
+// small so the work does the talking. Each picture's title shows on hover and links to its page.
+import { Image } from "emdash/ui";
+
+const { posts, hasMore, siteTitle, siteTagline, section, business } = Astro.props;
+const shots = posts.filter((p: any) => p.data.featured_image);
+const notes = posts.filter((p: any) => !p.data.featured_image).slice(0, 4);
+const href = (p: any) => `/posts/${p.id}`;
+const sets = new Map<string, string>();
+for (const p of shots) { const s = section(p); if (s) sets.set(s.slug, s.label); }
+---
+
+<header class="gl-head band">
+	<div class="frame gl-head__inner">
+		<h1 class="gl-title">{siteTitle}</h1>
+		{siteTagline && <p class="gl-tagline">{siteTagline}</p>}
+		{sets.size > 1 && (
+			<nav class="gl-sets" aria-label="Collections">
+				{[...sets].map(([slug, label]) => <a href={`/category/${slug}`}>{label}</a>)}
+			</nav>
+		)}
+	</div>
+</header>
+
+{shots.length > 0 && (
+	<section class="gl-wall" aria-label="Pictures">
+		{shots.map((p: any, i: number) => (
+			<a class="gl-item" href={href(p)}>
+				<Image image={p.data.featured_image} sizes="(min-width: 1100px) 33vw, (min-width: 640px) 50vw, 100vw" priority={i < 3} />
+				<span class="gl-cap"><span class="gl-cap__title">{p.data.title}</span>{section(p) && <span class="gl-cap__set">{section(p).label}</span>}</span>
+			</a>
+		))}
+	</section>
+)}
+
+{hasMore && <p class="frame gl-all"><a class="arrow-link" href="/posts">See every picture</a></p>}
+
+{(notes.length > 0 || business?.email) && (
+	<section class="band gl-foot" aria-label="Notes and contact">
+		<div class="frame gl-foot__grid">
+			{notes.length > 0 && (
+				<div>
+					<h2 class="gl-h2">Notes</h2>
+					<ul class="gl-notes">
+						{notes.map((p: any) => <li><a href={href(p)}>{p.data.title}</a>{p.data.excerpt && <span>{p.data.excerpt}</span>}</li>)}
+					</ul>
+				</div>
+			)}
+			{business?.email && (
+				<div class="gl-book">
+					<h2 class="gl-h2">Commissions and prints</h2>
+					<p><a href={`mailto:${business.email}`}>{business.email}</a></p>
+				</div>
+			)}
+		</div>
+	</section>
+)}
+
+<style>
+	.gl-head { padding-block: clamp(3rem, 7vw, 5rem) var(--spacing-8); text-align: center; }
+	.gl-head__inner { display: grid; justify-items: center; gap: var(--spacing-3); }
+	.gl-title { margin: 0; font-family: var(--font-heading); font-size: clamp(1.6rem, 3.2vw, 2.4rem); font-weight: 500; letter-spacing: .32em; text-transform: uppercase; }
+	.gl-tagline { margin: 0; max-width: 36em; color: var(--color-muted); letter-spacing: .02em; }
+	.gl-sets { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--spacing-1) var(--spacing-5); margin-top: var(--spacing-3); }
+	.gl-sets a { color: var(--color-text-secondary); font-size: var(--font-size-sm); letter-spacing: .14em; text-transform: uppercase; text-decoration: none; padding-bottom: 2px; border-bottom: 1px solid transparent; }
+	.gl-sets a:hover { color: var(--color-text); border-bottom-color: currentColor; }
+	.gl-wall { columns: 3 320px; column-gap: 8px; padding-inline: 8px; }
+	.gl-item { position: relative; display: block; margin: 0 0 8px; break-inside: avoid; overflow: hidden; background: var(--color-fill); }
+	.gl-item :global(img) { display: block; width: 100%; height: auto; transition: transform .6s ease, filter .3s; }
+	.gl-item:nth-child(3n + 1) :global(img) { aspect-ratio: 4 / 5; object-fit: cover; }
+	.gl-item:nth-child(3n + 2) :global(img) { aspect-ratio: 3 / 2; object-fit: cover; }
+	.gl-item:nth-child(3n) :global(img) { aspect-ratio: 1; object-fit: cover; }
+	.gl-cap { position: absolute; inset: auto 0 0; display: flex; justify-content: space-between; align-items: end; gap: var(--spacing-3); padding: var(--spacing-8) var(--spacing-4) var(--spacing-4); background: linear-gradient(transparent, rgb(0 0 0 / .7)); color: #fff; opacity: 0; transition: opacity .3s; }
+	.gl-item:hover .gl-cap, .gl-item:focus-visible .gl-cap { opacity: 1; }
+	.gl-item:hover :global(img) { transform: scale(1.02); }
+	.gl-cap__title { font-family: var(--font-heading); font-size: 1.1rem; }
+	.gl-cap__set { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; opacity: .8; white-space: nowrap; }
+	@media (hover: none) { .gl-cap { opacity: 1; } }
+	@media (prefers-reduced-motion: reduce) { .gl-item :global(img) { transition: none; } }
+	.gl-all { text-align: center; margin-block: var(--spacing-10); }
+	.gl-foot { padding-block: var(--spacing-16); }
+	.gl-foot__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--spacing-10); }
+	.gl-h2 { margin: 0 0 var(--spacing-4); font-size: var(--font-size-sm); font-weight: 600; letter-spacing: .24em; text-transform: uppercase; color: var(--color-muted); }
+	.gl-notes { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--spacing-4); }
+	.gl-notes a { display: block; font-family: var(--font-heading); font-size: 1.2rem; color: inherit; text-decoration: none; }
+	.gl-notes a:hover { text-decoration: underline; text-underline-offset: 4px; }
+	.gl-notes span { color: var(--color-muted); }
+	.gl-book p { margin: 0; font-family: var(--font-heading); font-size: clamp(1.3rem, 2.5vw, 1.8rem); }
+	.gl-book a { color: inherit; }
+</style>

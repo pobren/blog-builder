@@ -1,0 +1,37 @@
+{
+	"name": "@mrpwob/blog-builder",
+	"version": "0.0.0",
+	"description": "Install and update Blog Builder, a free open-source blog, on your own Cloudflare account from the command line.",
+	"type": "module",
+	"bin": {
+		"blog-builder": "cli.mjs"
+	},
+	"files": [
+		"cli.mjs",
+		"releases",
+		"README.md",
+		"LICENSE"
+	],
+	"engines": {
+		"node": ">=20"
+	},
+	"keywords": [
+		"blog",
+		"cloudflare",
+		"workers",
+		"self-hosted",
+		"emdash"
+	],
+	"homepage": "https://github.com/pobren/blog-builder#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/pobren/blog-builder.git"
+	},
+	"bugs": {
+		"url": "https://github.com/pobren/blog-builder/issues"
+	},
+	"license": "MIT",
+	"publishConfig": {
+		"access": "public"
+	}
+}
