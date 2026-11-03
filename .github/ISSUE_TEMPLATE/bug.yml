@@ -19,6 +19,7 @@ body:
     attributes:
       label: How did you install it?
       options:
+        - The Deploy to Cloudflare button
         - The installer (npx @mrpwob/blog-builder)
         - From the code (npm run setup)
   - type: input

@@ -3,3 +3,9 @@ contact_links:
   - name: Ask a question
     url: https://github.com/pobren/blog-builder/discussions
     about: Questions about installing or using Blog Builder go in Discussions, so everyone can find the answer.
+  - name: Read the set-up guide
+    url: https://github.com/pobren/blog-builder#readme
+    about: Step by step install and set-up instructions.
+  - name: Blog Builder home page
+    url: https://paulobrien.dev/blog/
+    about: What Blog Builder does, release notes and update emails.
