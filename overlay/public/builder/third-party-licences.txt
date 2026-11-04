@@ -1,8 +1,10 @@
 Blog Builder: third-party licences
 ==================================
 
-Blog Builder is free and open source under the MIT licence (https://github.com/pobren/blog-builder). It is built
-on EmDash (https://github.com/emdash-cms/emdash), licensed under the MIT licence below.
+Blog Builder is free and open source under the GNU Affero General Public License, version 3
+(https://www.gnu.org/licenses/agpl-3.0.html). The source code for the version you are running is at
+https://github.com/pobren/blog-builder. It is built on EmDash (https://github.com/emdash-cms/emdash),
+licensed under the MIT licence below.
 Blog Builder is independent and is not made, endorsed or supported by Cloudflare.
 
 The MIT License

@@ -119,6 +119,16 @@ Help is only given on GitHub. Blog Builder is a free project, so answers come wh
 
 ## Licence and credits
 
-Blog Builder is licensed under the [MIT License](LICENSE). It's built on [EmDash](https://github.com/emdash-cms/emdash) by Cloudflare, also under the MIT License; thank you to its authors. See [NOTICE](NOTICE).
+Blog Builder is open source under the [GNU Affero General Public License v3.0](LICENSE) (AGPL 3.0). Versions up to and including 2.0.1 were released under the MIT License and stay under it.
+
+What that means in plain English:
+
+- **Free for you.** Use it, change it and run it for yourself, your family or your business, on your own Cloudflare account. Every theme is included, with no licence key or trial.
+- **Share your changes.** If you change Blog Builder and let other people use your changed version over the internet, you must give them your changed source code under the same licence. Your posts, pictures and theme settings are yours and aren't covered.
+- **Hosting or selling it?** If you want to host Blog Builder for others, sell it as a service or build it into a paid product without sharing your changes, you need a commercial licence. [Get in touch](https://paulobrien.dev/contact/) and choose *Let's work together*.
+
+This summary isn't legal advice. The [LICENSE](LICENSE) file is what counts.
+
+Blog Builder is built on [EmDash](https://github.com/emdash-cms/emdash) by Cloudflare, under the MIT License; thank you to its authors. See [NOTICE](NOTICE).
 
 Blog Builder is independent. It isn't made, endorsed or supported by Cloudflare.

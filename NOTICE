@@ -1,6 +1,10 @@
 Blog Builder
 Copyright (c) 2026 Paul O'Brien
 
+Blog Builder is licensed under the GNU Affero General Public License, version 3 only
+(AGPL-3.0-only), in the LICENSE file. Versions up to and including 2.0.1 were released
+under the MIT License and stay under it.
+
 Blog Builder is built on EmDash (https://github.com/emdash-cms/emdash),
 Copyright (c) 2026 Cloudflare, Inc., licensed under the MIT License:
 

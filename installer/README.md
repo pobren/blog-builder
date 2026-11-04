@@ -14,4 +14,4 @@ The installer makes the blog's database (D1), picture storage (R2) and sign-in s
 
 Found a bug? Please [open an issue](https://github.com/pobren/blog-builder/issues). Questions go in [Discussions](https://github.com/pobren/blog-builder/discussions).
 
-MIT licence. Built on [EmDash](https://github.com/emdash-cms/emdash). Blog Builder is independent and isn't made, endorsed or supported by Cloudflare.
+GNU AGPL 3.0. Free to use, change and run yourself. Hosting it for others or selling it without sharing your changes needs a commercial licence: get in touch at [paulobrien.dev/contact](https://paulobrien.dev/contact/). Built on [EmDash](https://github.com/emdash-cms/emdash). Blog Builder is independent and isn't made, endorsed or supported by Cloudflare.
