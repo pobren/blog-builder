@@ -1,5 +1,10 @@
 # What's new in Blog Builder
 
+## 2.0.1: Releases Straight from GitHub
+_2026-11-04_
+
+- Signed Releases: New versions now go to npm straight from GitHub, with a signature you can check on npm. Nothing changes in your blog.
+
 ## 2.0.0: Free and Open Source
 _2026-11-03_
 
