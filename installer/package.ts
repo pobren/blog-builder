@@ -114,7 +114,7 @@ await build({
 	platform: "node",
 	format: "esm",
 	target: "node20",
-	banner: { js: `#!/usr/bin/env node\n// Blog Builder installer ${release.version}. MIT licence. https://github.com/pobren/blog-builder` },
+	banner: { js: `#!/usr/bin/env node\n// Blog Builder installer ${release.version}. GNU AGPL 3.0. https://github.com/pobren/blog-builder` },
 	define: { CLI_VERSION: JSON.stringify(release.version) },
 });
 
