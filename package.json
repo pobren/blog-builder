@@ -2,8 +2,8 @@
 	"name": "blog-builder",
 	"version": "2.0.1",
 	"private": true,
-	"description": "A free, open-source blog that runs on your own Cloudflare account, built on EmDash.",
-	"license": "AGPL-3.0-only",
+	"description": "A free blog that runs on your own Cloudflare account, built on EmDash.",
+	"license": "BUSL-1.1",
 	"type": "module",
 	"homepage": "https://paulobrien.dev/blog/",
 	"repository": {

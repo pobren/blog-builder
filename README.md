@@ -1,10 +1,12 @@
 <div align="center">
   <img src="overlay/public/builder/logo.svg" width="64" height="64" alt="">
   <h1>Blog Builder</h1>
-  <p><strong>A free, open-source blog that runs on your own Cloudflare account.</strong><br>
+  <p><strong>A free blog that runs on your own Cloudflare account.</strong><br>
   16 themes, a newsletter sign-up, a contact form and easy moves from WordPress and Ghost.</p>
   <p><a href="https://paulobrien.dev/blog/">Website</a> · <a href="#install">Install</a> · <a href="https://github.com/pobren/blog-builder/releases">Releases</a> · <a href="https://github.com/pobren/blog-builder/issues">Report a bug</a> · <a href="https://github.com/pobren/blog-builder/discussions">Ask a question</a></p>
 </div>
+
+**Free for personal and small business use, source available.** See [Licence and credits](#licence-and-credits) below.
 
 Blog Builder is [EmDash](https://github.com/emdash-cms/emdash), the open-source blogging software, with an installer, 16 themes and the plugins most blogs need already in. It installs into your own Cloudflare account, so your posts, pictures and readers stay there, and nothing depends on anyone else to keep running. Every feature is in the free app. There's nothing to unlock.
 
@@ -119,15 +121,16 @@ Help is only given on GitHub. Blog Builder is a free project, so answers come wh
 
 ## Licence and credits
 
-Blog Builder is open source under the [GNU Affero General Public License v3.0](LICENSE) (AGPL 3.0). Versions up to and including 2.0.1 were released under the MIT License and stay under it.
+Blog Builder is source available under the [Business Source License 1.1](LICENSE), from the first release after 2.0.1. Versions up to and including 2.0.1 stay under the MIT License.
 
 What that means in plain English:
 
-- **Free for you.** Use it, change it and run it for yourself, your family or your business, on your own Cloudflare account. Every theme is included, with no licence key or trial.
-- **Share your changes.** If you change Blog Builder and let other people use your changed version over the internet, you must give them your changed source code under the same licence. Your posts, pictures and theme settings are yours and aren't covered.
-- **Hosting or selling it?** If you want to host Blog Builder for others, sell it as a service or build it into a paid product without sharing your changes, you need a commercial licence. [Get in touch](https://paulobrien.dev/contact/) and choose *Let's work together*.
+- **Free** for personal and small business use: one person or organisation's own blogs and websites, up to 10. Read the code, change it and run your own copy. Every theme is included, with no licence key or trial.
+- **Needs a commercial licence:** going over 10 blogs, running it for clients or other people, or offering it as a hosted, managed or white-label service. [Get in touch](https://paulobrien.dev/contact/) and choose *Let's work together*.
+- Each version becomes Apache 2.0 four years after it's released.
+- Your posts, pictures and theme settings are yours and aren't covered.
 
-This summary isn't legal advice. The [LICENSE](LICENSE) file is what counts.
+There's nothing in the app that stops you. We trust you. This summary isn't legal advice. The [LICENSE](LICENSE) file is what counts.
 
 Blog Builder is built on [EmDash](https://github.com/emdash-cms/emdash) by Cloudflare, under the MIT License; thank you to its authors. See [NOTICE](NOTICE).
 
