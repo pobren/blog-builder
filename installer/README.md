@@ -1,6 +1,6 @@
 # Blog Builder installer
 
-Installs and updates [Blog Builder](https://github.com/pobren/blog-builder), a free, open-source blog, on your own Cloudflare account. Your posts, pictures and readers stay on your account, and nothing depends on anyone else to keep running.
+Installs and updates [Blog Builder](https://github.com/pobren/blog-builder), a free blog, on your own Cloudflare account. Your posts, pictures and readers stay on your account, and nothing depends on anyone else to keep running.
 
 ```sh
 npx @mrpwob/blog-builder setup     # install
@@ -14,4 +14,4 @@ The installer makes the blog's database (D1), picture storage (R2) and sign-in s
 
 Found a bug? Please [open an issue](https://github.com/pobren/blog-builder/issues). Questions go in [Discussions](https://github.com/pobren/blog-builder/discussions).
 
-GNU AGPL 3.0. Free to use, change and run yourself. Hosting it for others or selling it without sharing your changes needs a commercial licence: get in touch at [paulobrien.dev/contact](https://paulobrien.dev/contact/). Built on [EmDash](https://github.com/emdash-cms/emdash). Blog Builder is independent and isn't made, endorsed or supported by Cloudflare.
+Business Source License 1.1. Source available, free for personal and small business use on up to 10 of your own blogs and websites. Going over 10, running it for clients or offering it as a hosted service needs a commercial licence: get in touch at [paulobrien.dev/contact](https://paulobrien.dev/contact/). Built on [EmDash](https://github.com/emdash-cms/emdash). Blog Builder is independent and isn't made, endorsed or supported by Cloudflare.

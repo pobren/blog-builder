@@ -66,7 +66,7 @@ async function renderPage(page: string, origin: string, newer: string | null) {
 	return {
 		blocks: [
 			...(full ? [{ type: "header", text: "Blog Builder" }] : []),
-			{ type: "section", text: `Your blog runs Blog Builder${version ? ` ${version}` : ""}, free and open source, on your own Cloudflare account.` },
+			{ type: "section", text: `Your blog runs Blog Builder${version ? ` ${version}` : ""}, free for personal and small business use, on your own Cloudflare account.` },
 			...(newer
 				? [
 						{ type: "banner", variant: "default", title: `Blog Builder ${newer} is out`, description: "Update with the same installer you used: your posts, pictures and settings are kept." },
